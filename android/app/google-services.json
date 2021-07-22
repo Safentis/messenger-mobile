@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "476615363227",
+    "firebase_url": "https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "messenger-b15ea",
+    "storage_bucket": "messenger-b15ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476615363227:android:34e27f1e8cef9ca539543e",
+        "android_client_info": {
+          "package_name": "com.messengermobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "476615363227-m192aecep9df5p4sdpv4dm1n3pgp8mg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8vBdhUa5ueNfgOFILfnX6ZdsBqvYaihE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "476615363227-m192aecep9df5p4sdpv4dm1n3pgp8mg4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

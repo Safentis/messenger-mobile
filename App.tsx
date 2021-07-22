@@ -5,6 +5,11 @@ import {
     Text 
 } from 'react-native';
 
+
+import firebase from '@react-native-firebase/app';
+
+
+
 const styles = StyleSheet.create({
     container: {
       padding: 24,
@@ -20,10 +25,11 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
+    console.log(firebase);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
-                Messenger-Mobile!
+                Messenger-Mobile!!!
             </Text>
         </View>
     );
