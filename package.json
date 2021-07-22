@@ -11,6 +11,8 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@react-native-firebase/app": "^12.3.0",
+    "@react-native-firebase/database": "^12.3.0",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-windows": "^0.64.0-0"
