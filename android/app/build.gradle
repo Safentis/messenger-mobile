@@ -1,7 +1,5 @@
 apply plugin: "com.android.application"
-
-// React-Native Firebase
-apply plugin: "com.google.gms.google-services"
+apply plugin: 'com.google.gms.google-services' //REACT - NATIVE - FIREBASE
 
 import com.android.build.OutputFile
 
