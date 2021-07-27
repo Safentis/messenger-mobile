@@ -1,24 +1,28 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { Router, Scene, Actions } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import Queue from './screens/Queue/Queue';
 import Question from './screens/Question/Question';
 import Chatroom from './screens/Chatroom/Chatroom';
-import { store } from './redux/store/store';
+import { persistor, store } from './redux/store/store';
 import { requestChatrooms } from './redux/performers/application';
 import { requestClient } from './redux/performers/application';
 import useDatabase from './hooks/useDatabase';
+import { State } from './redux/reducers/application/application.interface';
 
 import { MAIN_BLUE_COLOR } from './utils/consts';
 
 const App = () => {
   return (
     <Provider store={store}>
-      <Routes />
+      <PersistGate loading={null} persistor={persistor}>
+        <Routes />
+      </PersistGate>
     </Provider>
   );
 };
@@ -30,11 +34,30 @@ const Routes = () => {
   const dispatch = useDispatch();
   const [isLoader, setIsLoader] = useState(true);
 
+  //* Getting person
+  const person = useSelector(
+    (state: { application: State }) => state.application.person,
+  );
+
   //* useDatabase returns callback when all data coming from server
   useDatabase(undefined, (database: any) => {
     dispatch(requestChatrooms(database.chatrooms));
     dispatch(requestClient(database.client));
-    setIsLoader(!isLoader);
+    setIsLoader(false);
+
+    //* ---------------------------------------------------------------------
+    //* In this case we are checking key and status, that to show a scene
+    Object.entries(database.chatrooms).find(([key, value]: [string, any]) => {
+      let isNoactive: boolean = value.status === 'noactive';
+      let isActive: boolean = value.status === 'active';
+      let isKey: boolean = person.key === key;
+
+      if (isKey && isNoactive) {
+        Actions.queue();
+      } else if (isKey && isActive) {
+        Actions.chatroom();
+      }
+    });
   });
 
   //* ------------------------------------------------
@@ -48,7 +71,7 @@ const Routes = () => {
     //* Handlers
     OneSignal.setNotificationWillShowInForegroundHandler(
       notificationReceivedEvent => {
-        Actions.chatroom();
+        Actions.chatroom(); //* actions to chatroom
         console.log(
           'OneSignal: notification will show in foreground:',
           notificationReceivedEvent,
@@ -63,17 +86,21 @@ const Routes = () => {
     );
 
     OneSignal.setNotificationOpenedHandler(notification => {
-      Actions.chatroom();
+      Actions.chatroom(); //* actions to chatroom
       console.log('OneSignal: notification opened:', notification);
     });
+
+    return () => {
+      OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
+    };
   }, []);
 
   return isLoader ? (
     <View style={styles.loaderWrapper}>
       <ActivityIndicator
         style={styles.loader}
-        size="large" 
-        color={MAIN_BLUE_COLOR} 
+        size="large"
+        color={MAIN_BLUE_COLOR}
       />
     </View>
   ) : (
@@ -91,14 +118,12 @@ const Routes = () => {
           title="Queue"
           component={Queue}
           hideNavBar
-          // initial
         />
         <Scene
           key="chatroom"
           title="Chatroom"
           component={Chatroom}
           hideNavBar
-          // initial
         />
       </Scene>
     </Router>
@@ -108,13 +133,11 @@ const Routes = () => {
 const styles = StyleSheet.create({
   loaderWrapper: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: 'center',
   },
-  loader: {
-    
-  },
+  loader: {},
   container: {
-    padding: 20
+    padding: 20,
   },
 });
 

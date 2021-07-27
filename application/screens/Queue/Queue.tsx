@@ -1,17 +1,22 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { 
+  View, 
+  Text,
+  Button, 
+  StyleSheet, 
+} from 'react-native';
 import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { requestQueue } from '../../redux/performers/application';
-import { Chatroom } from '../../App.interface';
+// import { Chatroom } from '../../App.interface';
 
-import { MAIN_BLUE_COLOR, MAIN_BROWN_COLOR } from '../../utils/consts';
-
-type typesort = [string, Chatroom];
-type typefilter = [string, Chatroom];
-type typefind = [string, Chatroom];
+import { 
+  MAIN_BLUE_COLOR, 
+  MAIN_BROWN_COLOR 
+} from '../../utils/consts';
+import useQueue from '../../hooks/useQueue';
 
 const Queue: FC = () => {
   //* ----------------------------------------------
@@ -29,39 +34,9 @@ const Queue: FC = () => {
 
   //* ----------------------------------------------
   //* Function for handling
-  const filterFunc = ([key, value]: typefilter): boolean => {
-    return value.status === 'noactive';
-  };
-
-  //* We make sort for the 'created' field 
-  const sortFunc = (b: typesort, a: typesort): number => {
-    let [keyB, valueB] = b;
-    let [keyA, valueA] = a;
-
-    let numA: number = +new Date(valueA.created);
-    let numB: number = +new Date(valueB.created);
-
-    return numB - numA;
-  };
-
-  const findFunc = ([key, value]: typefind, positionInQueue: number): void => {
-    if (key === person.key) {
-      dispatch(requestQueue({ positionInQueue }));
-    }
-  };
-
-  useEffect(() => {
-    if (chatrooms) {
-      let entries: [string, Chatroom][];
-      let isFiltered;
-      let isSorted;
-
-      entries = Object.entries(chatrooms);
-      isFiltered = entries.filter(filterFunc);
-      isSorted = isFiltered.sort(sortFunc);
-      isSorted.find(findFunc);
-    }
-  }, [chatrooms]);
+  useQueue({chatrooms, person}, (positionInQueue: number) => {
+    dispatch(requestQueue({ positionInQueue }));
+  });
 
   //* ----------------------------------------------
   // With this function, we expose tags for onsignals,
@@ -95,9 +70,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
-    // margin: 5,
-    // padding: 20,
-    // paddingTop: 0,
   },
   queueText: {
     flex: 10,
