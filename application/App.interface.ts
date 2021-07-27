@@ -1,7 +1,7 @@
 export interface Chatroom {
   client: string;
   created: string | number | Date;
-  messages: Message[] | null;
+  messages: Message | null;
   operatorId: string;
   saved: string;
   score: string | null;

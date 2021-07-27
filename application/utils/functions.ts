@@ -16,13 +16,15 @@ export interface HandleCallback {
   key: string;
 }
 
+type callbackfunc = ({ status, key }: HandleCallback) => void
+
 export const createChatroom = async (
   {
     name: client,
     selectedTheme: theme,
     selectedSubtheme: subtheme,
   }: CreateChatroom,
-  callback: ({ status, key }: HandleCallback) => void,
+  callback: callbackfunc,
 ) => {
   try {
     let timestamp = firebase.database.ServerValue.TIMESTAMP;
@@ -41,7 +43,11 @@ export const createChatroom = async (
         status: DIALOG_STATUS,
         subtheme,
         theme,
-        messages: null,
+        messages: {
+          timestamp: '',
+          content: '',
+          writtenBy: '',
+        },
         saved: 'nosaved',
         score: null,
       },

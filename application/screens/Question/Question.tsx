@@ -3,7 +3,16 @@ import { FC, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Actions } from 'react-native-router-flux';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, View, Alert, Button, TextInput, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { 
+  Text, 
+  View, 
+  Alert, 
+  Button, 
+  TextInput, 
+  StyleSheet, 
+  ScrollView, 
+  SafeAreaView 
+} from 'react-native';
 
 import { createChatroom, HandleCallback } from '../../utils/functions';
 import { requestPerson } from '../../redux/performers/application';
@@ -29,18 +38,26 @@ const Question: FC = () => {
   const client = useSelector((state: { application: State }) => {
     return state.application.client;
   });
-
+  
+  // Object client check
+  const isObject: boolean = typeof client === 'object';
+  const isThemes: boolean =  isObject && 'themes' in client;
+  const isSubthemes: boolean = isObject && 'subthemes' in client;
+  
+  let themesStartValue = isThemes ? client.themes[0] : '';
+  let subthemesStartValue = isSubthemes ? client.subthemes[0] : '';
+  
   //* ----------------------------------------------------------
   //* Choise
   const [name, onChangeName]: field = useState('');
-  const [selectedTheme, setSelectedTheme]: field = useState('');
-  const [selectedSubtheme, setSelectedSubtheme]: field = useState('');
+  const [selectedTheme, setSelectedTheme]: field = useState(themesStartValue);
+  const [selectedSubtheme, setSelectedSubtheme]: field = useState(subthemesStartValue);
 
   //* ----------------------------------------------------------
   // Set to database
   const ALERT_TITLE: string = 'Issue';
   const ALERT_FIELDS_EMPTY: string = 'Not all fields are filled';
-
+  
   const handleStatus = ({ status, key }: HandleCallback): void => {
     if (status) {
       Actions.queue();
@@ -61,6 +78,9 @@ const Question: FC = () => {
     let isSubtheme: boolean = selectedSubtheme.length > 0;
     //* If fields not empty we create a chatroom
     //* in firebase
+
+    console.log(selectedTheme)
+
     if (isName && isTheme && isSubtheme) {
       createChatroom(
         {
@@ -68,24 +88,19 @@ const Question: FC = () => {
           selectedTheme,
           selectedSubtheme,
         },
-        handleStatus,
+        handleStatus, //* callback func is second arg
       );
     } else {
       Alert.alert(ALERT_TITLE, ALERT_FIELDS_EMPTY);
     }
   };
 
-  //* ----------------------------------------------------------
-  // Component check
-  const isThemes: boolean = typeof client === 'object' && 'themes' in client;
-  const isSubthemes: boolean = typeof client === 'object' && 'subthemes' in client;
-
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.question}>
           <Text style={styles.questionTitle}>
-            Create question
+            question
           </Text>
 
           <View style={styles.questionBlock}>
@@ -102,7 +117,7 @@ const Question: FC = () => {
             <View style={[styles.input, styles.questionSelect]}>
               <Picker
                 selectedValue={selectedTheme}
-                onValueChange={(itemValue, itemIndex) =>
+                onValueChange={(itemValue, itemIndex) => 
                   setSelectedTheme(itemValue)
                 }>
                 {isThemes
@@ -158,14 +173,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   questionLabel: {
-    
+
   },
   questionInput: {
-    // marginTop: 5,
+    marginTop: 5,
     paddingLeft: 18,
   },
   questionSelect: {
-    // marginTop: 5,
+    marginTop: 5,
   },
   questionButton: {
     marginTop: 60,
@@ -177,7 +192,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     paddingRight: 18,
-    fontWeight: 'bold'
+    fontSize: 16,
+    fontWeight: '500'
   },
   label: {
     color: MAIN_BLUE_COLOR,
