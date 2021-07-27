@@ -1,11 +1,17 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { requestQueue } from '../../redux/performers/application';
+import { Chatroom } from '../../App.interface';
 
 import { MAIN_BLUE_COLOR, MAIN_BROWN_COLOR } from '../../utils/consts';
+
+type typesort = [string, Chatroom];
+type typefilter = [string, Chatroom];
+type typefind = [string, Chatroom];
 
 const Queue: FC = () => {
   //* ----------------------------------------------
@@ -23,12 +29,22 @@ const Queue: FC = () => {
 
   //* ----------------------------------------------
   //* Function for handling
-  //* We make sort for the 'created' field
-  const sortFunc = (b: any, a: any): number => {
-    return +new Date(b[1].created) - +new Date(a[1].created);
+  const filterFunc = ([key, value]: typefilter): boolean => {
+    return value.status === 'noactive';
   };
 
-  const findFunc = ([key, value]: any, positionInQueue: number): void => {
+  //* We make sort for the 'created' field 
+  const sortFunc = (b: typesort, a: typesort): number => {
+    let [keyB, valueB] = b;
+    let [keyA, valueA] = a;
+
+    let numA: number = +new Date(valueA.created);
+    let numB: number = +new Date(valueB.created);
+
+    return numB - numA;
+  };
+
+  const findFunc = ([key, value]: typefind, positionInQueue: number): void => {
     if (key === person.key) {
       dispatch(requestQueue({ positionInQueue }));
     }
@@ -36,15 +52,23 @@ const Queue: FC = () => {
 
   useEffect(() => {
     if (chatrooms) {
-      let entries: [string, any][] = Object.entries(chatrooms);
-      let sortByCreated: [string, any][] = [];
+      let entries: [string, Chatroom][];
+      let isFiltered;
+      let isSorted;
 
-      sortByCreated = entries.sort(sortFunc);
-      sortByCreated.find(findFunc);
+      entries = Object.entries(chatrooms);
+      isFiltered = entries.filter(filterFunc);
+      isSorted = isFiltered.sort(sortFunc);
+      isSorted.find(findFunc);
     }
   }, [chatrooms]);
 
-  const handleReminde = (): void => {};
+  //* ----------------------------------------------
+  // With this function, we expose tags for onsignals,
+  // when operator enters in chatroom we are getting push-info
+  const handleReminde = (): void => {
+    OneSignal.sendTag('dialog', person.key);
+  };
 
   return (
     <View style={styles.queue}>
@@ -55,7 +79,6 @@ const Queue: FC = () => {
           You will be answered soon
         </Text>
       </View>
-      <View></View>
       <View style={styles.queueButton}>
         <Button
           title="Remind when it's turn"
@@ -72,9 +95,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
-    margin: 5,
-    padding: 20,
-    paddingTop: 0,
+    // margin: 5,
+    // padding: 20,
+    // paddingTop: 0,
   },
   queueText: {
     flex: 10,
