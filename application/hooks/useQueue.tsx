@@ -29,7 +29,7 @@ const useQueue = ({ chatrooms, person }: Props, callback: callbackfunc) => {
   // We are finding position in queue
   const findFunc = ([key, value]: typefunc, positionInQueue: number): void => {
     if (key === person.key) {
-      callback(positionInQueue);
+      callback(positionInQueue + 1);
     }
   };
 
@@ -37,7 +37,10 @@ const useQueue = ({ chatrooms, person }: Props, callback: callbackfunc) => {
     if (chatrooms) {
       let entries: [string, Chatroom][] = Object.entries(chatrooms);
 
-      entries.filter(filterFunc).sort(sortFunc).find(findFunc);
+      entries
+        .filter(filterFunc)
+        .sort(sortFunc)
+        .find(findFunc);
     }
   }, [chatrooms]);
 

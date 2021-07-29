@@ -9,26 +9,21 @@ import {
   Alert, 
   Button, 
   TextInput, 
-  StyleSheet, 
   ScrollView, 
   SafeAreaView 
 } from 'react-native';
 
 import { createChatroom, HandleCallback } from '../../utils/functions';
 import { requestPerson } from '../../redux/performers/application';
-
 import { State } from '../../redux/reducers/application/application.interface';
-import {
-  MAIN_WHITE_COLOR,
-  MAIN_LIGHT_GREY_COLOR,
-  MAIN_GREY_COLOR,
-  MAIN_BLUE_COLOR,
-} from '../../utils/consts';
+
+import { MAIN_BLUE_COLOR } from '../../utils/consts';
+import { styles } from './Question.styles';
 
 type action = React.Dispatch<React.SetStateAction<string>>;
 type field = [string, action];
 
-const Question: FC = () => {
+const Question: FC = (): React.ReactElement => {
   //* ----------------------------------------------------------
   //* Redux
   const dispatch = useDispatch();
@@ -78,8 +73,6 @@ const Question: FC = () => {
     let isSubtheme: boolean = selectedSubtheme.length > 0;
     //* If fields not empty we create a chatroom
     //* in firebase
-
-    console.log(selectedTheme)
 
     if (isName && isTheme && isSubtheme) {
       createChatroom(
@@ -159,49 +152,6 @@ const Question: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  question: {
-    paddingTop: 50
-  },
-  questionTitle: {
-    fontSize: 30,
-    marginBottom: 30,
-    textTransform: 'uppercase',
-    fontWeight: '600'
-  },
-  questionBlock: {
-    marginTop: 30,
-  },
-  questionLabel: {
 
-  },
-  questionInput: {
-    marginTop: 5,
-    paddingLeft: 18,
-  },
-  questionSelect: {
-    marginTop: 5,
-  },
-  questionButton: {
-    marginTop: 60,
-  },
-  input: {
-    backgroundColor: MAIN_WHITE_COLOR,
-    borderColor: MAIN_LIGHT_GREY_COLOR,
-    borderBottomColor: MAIN_GREY_COLOR,
-    borderRadius: 5,
-    borderWidth: 1,
-    paddingRight: 18,
-    fontSize: 16,
-    fontWeight: '500'
-  },
-  label: {
-    color: MAIN_BLUE_COLOR,
-    fontWeight: '600',
-    fontSize: 18,
-    textTransform: 'uppercase',
-    textAlign: 'left',
-  },
-});
 
 export default Question;
