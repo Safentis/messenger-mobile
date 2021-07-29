@@ -16,7 +16,8 @@ export interface HandleCallback {
   key: string;
 }
 
-type callbackfunc = ({ status, key }: HandleCallback) => void
+type callbackfunc = ({ status, key }: HandleCallback) => void;
+type databasereftype = FirebaseDatabaseTypes.Reference;
 
 export const createChatroom = async (
   {
@@ -28,13 +29,8 @@ export const createChatroom = async (
 ) => {
   try {
     let timestamp = firebase.database.ServerValue.TIMESTAMP;
-
-    let databaseRef: FirebaseDatabaseTypes.Reference = await database().ref(
-      'chatrooms',
-    );
-
+    let databaseRef: databasereftype = await database().ref('chatrooms');
     let databaseKey: string = databaseRef.push().key as string;
-
     let fields = {
       [databaseKey]: {
         client,
@@ -43,11 +39,7 @@ export const createChatroom = async (
         status: DIALOG_STATUS,
         subtheme,
         theme,
-        messages: {
-          timestamp: '',
-          content: '',
-          writtenBy: '',
-        },
+        messages: null,
         saved: 'nosaved',
         score: null,
       },

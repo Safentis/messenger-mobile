@@ -4,21 +4,17 @@ import {
   View, 
   Text,
   Button, 
-  StyleSheet, 
 } from 'react-native';
 import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { requestQueue } from '../../redux/performers/application';
-// import { Chatroom } from '../../App.interface';
-
-import { 
-  MAIN_BLUE_COLOR, 
-  MAIN_BROWN_COLOR 
-} from '../../utils/consts';
 import useQueue from '../../hooks/useQueue';
 
-const Queue: FC = () => {
+import { MAIN_BLUE_COLOR } from '../../utils/consts';
+import { styles } from './Queue.styles';
+
+const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
   //* Redux
   const dispatch = useDispatch();
@@ -64,29 +60,5 @@ const Queue: FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  queue: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'column',
-  },
-  queueText: {
-    flex: 10,
-    marginTop: 10,
-  },
-  queueTextInfo: {
-    color: MAIN_BLUE_COLOR,
-    fontSize: 20,
-  },
-  queuePosition: {
-    color: MAIN_BROWN_COLOR,
-    fontWeight: 'bold',
-    fontSize: 24,
-  },
-  queueButton: {
-    flex: 3,
-  },
-});
 
 export default Queue;
