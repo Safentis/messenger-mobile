@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PubNubProvider } from 'pubnub-react';
-import { View } from 'react-native';
+import { Animated, Easing, View } from 'react-native';
 import PubNub from 'pubnub';
 import { usePubNub } from 'pubnub-react';
 import Pubnub from 'pubnub';
@@ -10,12 +10,14 @@ import Namebar from './Namebar/Namebar';
 import Messages from './Messages/Messages';
 import Inputbar from './Inputbar/Inputbar';
 import usePubnub from '../../hooks/usePabnab';
-import { requestMessage, requestPerson } from '../../redux/performers/application';
-import { State } from '../../redux/reducers/application/application.interface';
 import {
-  Message as MessageInterface,
-  Person,
-} from '../../App.interface';
+  requestMessage,
+  requestPerson,
+} from '../../redux/performers/application';
+
+import { styles } from './Chatroom.styles';
+import { State } from '../../redux/reducers/application/application.interface';
+import { Message as MessageInterface, Person } from '../../App.interface';
 import {
   Signal,
   Envelope,
@@ -24,9 +26,6 @@ import {
   typingType,
   messageType,
 } from './Chatroom.interface';
-
-import { styles } from './Chatroom.styles';
-
 
 const pubnub = new PubNub({
   subscribeKey: 'sub-c-4e5c7380-df58-11eb-b709-22f598fbfd18',
@@ -40,8 +39,8 @@ const Chatroom = () => {
     <PubNubProvider client={pubnub}>
       <ChatroomInner />
     </PubNubProvider>
-  )
-}
+  );
+};
 
 const ChatroomInner: FC = (): React.ReactElement => {
   const dispatch = useDispatch();
@@ -66,19 +65,15 @@ const ChatroomInner: FC = (): React.ReactElement => {
   });
 
   //* ---------------------------------------------------------------------
-  //* Variables
-  const allMessage: MessageInterface[] = Object.values(chatroom[1].messages);
-  
-  
-  //* ---------------------------------------------------------------------
   //*                         PUBNUB SECTION
   //* ---------------------------------------------------------------------
-  
+
   //* Here we obtain PubNub instance
   const pubnub: Pubnub = usePubNub(); //* Include pubnub
+  const allMessages: MessageInterface[] = Object.values(chatroom[1].messages);
   const chatroomChannel: string = `room-${person.key}`; //* main channel
   const [isTyping, setIsTyping]: typingType = useState(false);
-  const [messages, setMessages]: messageType = useState(allMessage);
+  const [messages, setMessages]: messageType = useState(allMessages);
 
   //* ---------------------------------------------------------------------
   //* Pubnub listeners
@@ -92,12 +87,20 @@ const ChatroomInner: FC = (): React.ReactElement => {
     }
   };
 
-  const handleMessage = ({message}: Envelope) => {
-    setMessages((msgs: MessageInterface[]) => [
-      ...msgs,
-      message,
-    ]);
+  const opacity: Animated.Value = new Animated.Value(0);
 
+  // Will change fadeAnim value to 1 in 5 seconds
+  const animate = () => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleMessage = ({ message }: Envelope) => {
+    setMessages((msgs: MessageInterface[]) => [...msgs, message]);
+    
     if (message.writtenBy === 'client') {
       dispatch(
         requestMessage(person.key, {
@@ -106,16 +109,15 @@ const ChatroomInner: FC = (): React.ReactElement => {
       );
     }
   };
-  
+
   useEffect(() => {
     if (pubnub) {
-      pubnub.setUUID('client');
-
       const listener = {
         message: handleMessage,
         signal: handleSignal,
       };
 
+      pubnub.setUUID('client');
       pubnub.addListener(listener);
       pubnub.subscribe({ channels: [chatroomChannel] });
       return () => {
@@ -129,8 +131,8 @@ const ChatroomInner: FC = (): React.ReactElement => {
   //* Pubnub handlers
   const handleKeyUp = () => {
     let inputHasText = message.length > 0;
-    
-    if ((inputHasText) || (!inputHasText)) {
+
+    if (inputHasText || !inputHasText) {
       pubnub.signal({
         channel: chatroomChannel,
         message: inputHasText ? '1' : '0',
@@ -153,7 +155,7 @@ const ChatroomInner: FC = (): React.ReactElement => {
       // Publish our message to the channel `room-{person-key}`
       pubnub.publish({
         channel: chatroomChannel,
-        message: { 
+        message: {
           content: message,
           writtenBy: 'client',
           images: [],
@@ -163,20 +165,24 @@ const ChatroomInner: FC = (): React.ReactElement => {
     }
   };
 
-  
+  //* ---------------------------------------------------------------------
+  //*                         END - PUBNUB SECTION
+  //* ---------------------------------------------------------------------
+
   return (
     <View style={styles.chatroom}>
-      <Namebar />
+      <Namebar messagesLength={messages.length} />
       <Messages 
         isTyping={isTyping}
-        messages={messages} 
-        person={person} 
+        messages={messages}
+        person={person}
+        opacity={opacity}
       />
-      <Inputbar 
-        message={message} 
-        handleKeyUp={handleKeyUp} 
+      <Inputbar
+        message={message}
+        handleKeyUp={handleKeyUp}
         handleSubmit={handleSubmit}
-        onChangeMessage={onChangeMessage} 
+        onChangeMessage={onChangeMessage}
       />
     </View>
   );

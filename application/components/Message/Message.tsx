@@ -1,9 +1,11 @@
 import React, { FC } from 'react';
+import { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
 
 import { Props, messageContent } from './Message.interface';
 
 import { styles } from './Message.styles';
+
 
 const Message: FC<Props> = ({
   content,
@@ -48,8 +50,8 @@ const Message: FC<Props> = ({
   return (
     <View style={[styles.message]}>
       <View style={styles.messageInner}>
-        {IMAGES}
-        {CONTENT}
+          {IMAGES}
+          {CONTENT}
         <View style={[styles.information, informationClass]}>
           <Text style={[styles.writter]}>{isOperator ? writtenBy : name}</Text>
           <Text style={[styles.time]}>{timestamp}</Text>

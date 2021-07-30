@@ -4,6 +4,7 @@ import {
   Keyboard,
   SafeAreaView,
   ScrollView,
+  Animated,
   View,
 } from 'react-native';
 
@@ -14,7 +15,7 @@ import { styles } from './Messages.styles';
 import { Props } from './Messages.interface';
 import { Message as MessageInterface } from '../../../App.interface';
 
-const Messages: FC<Props> = ({ messages, person, isTyping }) => {
+const Messages: FC<Props> = ({ messages, person, isTyping, opacity }) => {
   const scrollView: React.MutableRefObject<null | any> = useRef(null);
   const handleScroll = () => {
     scrollView.current.scrollToEnd({
@@ -28,7 +29,6 @@ const Messages: FC<Props> = ({ messages, person, isTyping }) => {
     return () => {
       keybordDidListener.remove();
     };
-
   });
 
   return (
@@ -44,10 +44,13 @@ const Messages: FC<Props> = ({ messages, person, isTyping }) => {
                 ): number =>
                   +new Date(messageA.timestamp) - +new Date(messageB.timestamp),
               )
-              .map((message: MessageInterface, index: number) => (
-                <Message key={index} name={person.name} {...message} />
-              ))
-          }
+              .map((message: MessageInterface, index: number) =>
+                <Message 
+                  key={index} 
+                  {...message} 
+                  name={person.name} 
+                />
+              )}
           <Typing isTyping={isTyping} />
         </ScrollView>
       </SafeAreaView>
