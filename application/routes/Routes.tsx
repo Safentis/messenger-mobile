@@ -18,6 +18,7 @@ type isLoaderType = [boolean, Function];
 type chatroomsType = [object, Function];
 
 const Routes: FC = () => {
+  
   //* ------------------------------------------------
   //* In this case we are getting an all data from database
   //* and set them to redux store
@@ -35,24 +36,38 @@ const Routes: FC = () => {
     dispatch(requestChatrooms(database.chatrooms));
     dispatch(requestClient(database.client));
     
-    setIsLoader(false);
     setChatrooms(database.chatrooms);
   });
 
   //* ---------------------------------------------------------------------
   //* In this case we are checking key and status, that to show a scene
   useEffect(() => {
+
+    const initialState = (routes: Route[], key: string) => {
+      routes.find((item: Route) => {
+        (item.key === key)
+          ? item.initial = true
+          : item.initial = false;
+      });
+
+      setIsLoader(false);
+    };
+
     Object.entries(chatrooms).find(([key, value]: [string, any]) => {
       let isNoactive: boolean = value.status === 'noactive';
       let isActive: boolean = value.status === 'active';
       let isKey: boolean = person.key === key;
 
       if (isKey && isNoactive) {
-        Actions.queue();
+        initialState(routes, 'queue');
       } else if (isKey && isActive) {
-        Actions.chatroom();
+        initialState(routes, 'chatroom');
+      } else if (person.key.length === 0 && isNoactive) {
+        initialState(routes, 'question');
       }
     });
+    
+
   }, [chatrooms]);
 
   //* ------------------------------------------------
@@ -101,7 +116,7 @@ const Routes: FC = () => {
   ) : (
     <Router sceneStyle={styles.container}>
       <Scene key="root">
-        {routes.map((route: Route) => (
+        {!isLoader && routes.map((route: Route) => (
           <Scene {...route} />
         ))}
       </Scene>

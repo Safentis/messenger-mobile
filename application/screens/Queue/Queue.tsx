@@ -1,10 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  View, 
-  Text,
-  Button, 
-} from 'react-native';
+import { View, Text, Button } from 'react-native';
 import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
@@ -13,6 +9,7 @@ import useQueue from '../../hooks/useQueue';
 
 import { MAIN_BLUE_COLOR } from '../../utils/consts';
 import { styles } from './Queue.styles';
+import { Actions } from 'react-native-router-flux';
 
 const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
@@ -30,9 +27,17 @@ const Queue: FC = (): React.ReactElement => {
 
   //* ----------------------------------------------
   //* Function for handling
-  useQueue({chatrooms, person}, (positionInQueue: number) => {
+  useQueue({ chatrooms, person }, (positionInQueue: number) => {
     dispatch(requestQueue({ positionInQueue }));
   });
+
+  useEffect(() => {
+    Object.entries(chatrooms).find(([key, value]: [string, any]) => {
+      if (key === person.key && value.status === 'active') {
+        Actions.chatroom();
+      }
+    });
+  }, [chatrooms]);
 
   //* ----------------------------------------------
   // With this function, we expose tags for onsignals,

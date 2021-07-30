@@ -4,6 +4,7 @@ export interface Chatroom {
   created: string | number | Date
   messages: Message
   operatorId: string
+  operator: string
   saved: string
   score: string | null
   status: string

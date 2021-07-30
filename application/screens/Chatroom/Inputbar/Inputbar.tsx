@@ -1,19 +1,17 @@
 import React, { FC } from 'react';
-import { 
-    Button, 
-    TextInput, 
-    View 
-} from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { Button, TextInput, View } from 'react-native';
 
 import { styles } from './Inputbar.styles';
-
 import { Props } from './Inputbar.interface';
-import { 
-    MAIN_BLUE_COLOR, 
-    MAIN_WHITE_COLOR 
-} from '../../../utils/consts';
+import { MAIN_BLUE_COLOR, MAIN_WHITE_COLOR } from '../../../utils/consts';
 
-const Inputbar: FC <Props> = ({message, onChangeMessage, handleKeyUp, handleSubmit}) => {
+const Inputbar: FC<Props> = ({
+  message,
+  onChangeMessage,
+  handleKeyUp,
+  handleSubmit,
+}) => {
   return (
     <View style={styles.inputbar}>
       <TextInput
@@ -21,7 +19,7 @@ const Inputbar: FC <Props> = ({message, onChangeMessage, handleKeyUp, handleSubm
         value={message}
         onChangeText={onChangeMessage}
         onKeyPress={handleKeyUp}
-        placeholder="Type message heare..."
+        placeholder="Type your message..."
         placeholderTextColor={MAIN_WHITE_COLOR}
       />
       <View style={styles.inputbarButtons}>
@@ -36,7 +34,9 @@ const Inputbar: FC <Props> = ({message, onChangeMessage, handleKeyUp, handleSubm
           <Button
             title="Add file"
             color={`${MAIN_BLUE_COLOR}`}
-            onPress={() => {}}
+            onPress={() => {
+              Actions.camera();
+            }}
           />
         </View>
       </View>
@@ -44,4 +44,4 @@ const Inputbar: FC <Props> = ({message, onChangeMessage, handleKeyUp, handleSubm
   );
 };
 
-export default Inputbar
+export default Inputbar;
