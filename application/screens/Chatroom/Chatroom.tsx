@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PubNubProvider } from 'pubnub-react';
-import { Animated, Easing, View } from 'react-native';
+import { Animated, View } from 'react-native';
 import PubNub from 'pubnub';
 import { usePubNub } from 'pubnub-react';
 import Pubnub from 'pubnub';
@@ -15,8 +15,8 @@ import {
   requestPerson,
 } from '../../redux/performers/application';
 
-import { styles } from './Chatroom.styles';
 import { State } from '../../redux/reducers/application/application.interface';
+import { styles } from './Chatroom.styles';
 import { Message as MessageInterface, Person } from '../../App.interface';
 import {
   Signal,
@@ -70,10 +70,9 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
   //* Here we obtain PubNub instance
   const pubnub: Pubnub = usePubNub(); //* Include pubnub
-  const allMessages: MessageInterface[] = Object.values(chatroom[1].messages);
   const chatroomChannel: string = `room-${person.key}`; //* main channel
   const [isTyping, setIsTyping]: typingType = useState(false);
-  const [messages, setMessages]: messageType = useState(allMessages);
+  const [messages, setMessages]: messageType = useState([]);
 
   //* ---------------------------------------------------------------------
   //* Pubnub listeners
@@ -100,7 +99,7 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
   const handleMessage = ({ message }: Envelope) => {
     setMessages((msgs: MessageInterface[]) => [...msgs, message]);
-    
+
     if (message.writtenBy === 'client') {
       dispatch(
         requestMessage(person.key, {
@@ -112,10 +111,16 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (pubnub) {
-      const listener = {
+      //* Set start messages to chat
+      let allMessages: MessageInterface[] | null = Object.values(
+        chatroom[1].messages || [],
+      );
+      let listener = {
         message: handleMessage,
         signal: handleSignal,
       };
+
+      setMessages(allMessages);
 
       pubnub.setUUID('client');
       pubnub.addListener(listener);
@@ -172,7 +177,7 @@ const ChatroomInner: FC = (): React.ReactElement => {
   return (
     <View style={styles.chatroom}>
       <Namebar messagesLength={messages.length} />
-      <Messages 
+      <Messages
         isTyping={isTyping}
         messages={messages}
         person={person}

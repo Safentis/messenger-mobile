@@ -1,24 +1,27 @@
 import { StyleSheet } from 'react-native';
 
-import { MAIN_GOLD_COLOR, MAIN_GREY_COLOR } from '../../utils/consts';
+import { MAIN_BLUE_COLOR } from '../../utils/consts';
 
 export const styles = StyleSheet.create({
     complite: {
+        padding: 20,
+        paddingTop: 50,
         flex: 1,
     },
-    compliteStars: {
-        flex: 2,
+    text: {
+        fontSize: 20,
+        textAlign: 'center',
+        color: MAIN_BLUE_COLOR,
+    },
+    header: {
+        flex: 1
+    },
+    body: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flex: 1
     },
-    compliteStarGrey: {
-        color: MAIN_GREY_COLOR,
-    },
-    compliteStarGold: {
-        color: MAIN_GOLD_COLOR,
-    },
-    compliteButton: {
+    footer: {
         flex: 1,
-    }
+    },
 });
