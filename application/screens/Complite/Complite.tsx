@@ -5,12 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { requestPerson } from '../../redux/performers/application';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons';
 import { State } from '../../redux/reducers/application/application.interface';
 
 import { styles } from './Complite.styles';
 import { 
-  MAIN_BLUE_COLOR, 
   MAIN_GOLD_COLOR, 
   MAIN_GREY_COLOR 
 } from '../../utils/consts';
@@ -83,11 +82,16 @@ const Complite: FC = () => {
         )}
       </View>
       <View style={styles.footer}>
-        <Button 
-          title="appreciate" 
-          onPress={handleScore}
-          color={MAIN_BLUE_COLOR} 
-        />
+        <View style={styles.button} onTouchStart={handleScore}>
+          <Text style={styles.buttonText}>
+            Appreciate
+          </Text>
+          <FontAwesomeIcon 
+            style={styles.buttonIcon} 
+            size={25}
+            icon={faCheck} 
+          />
+        </View>
       </View>
     </View>
   );

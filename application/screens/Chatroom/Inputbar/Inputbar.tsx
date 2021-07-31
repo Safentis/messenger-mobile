@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
 import { Actions } from 'react-native-router-flux';
 import { Button, TextInput, View } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPaperclip, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
-import { styles } from './Inputbar.styles';
 import { Props } from './Inputbar.interface';
-import { MAIN_BLUE_COLOR, MAIN_WHITE_COLOR } from '../../../utils/consts';
+import { styles } from './Inputbar.styles';
+import { MAIN_BLUE_COLOR, MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
 
 const Inputbar: FC<Props> = ({
   message,
@@ -20,23 +22,27 @@ const Inputbar: FC<Props> = ({
         onChangeText={onChangeMessage}
         onKeyPress={handleKeyUp}
         placeholder="Type your message..."
-        placeholderTextColor={MAIN_WHITE_COLOR}
+        placeholderTextColor={MAIN_DARK_GREY_COLOR}
       />
       <View style={styles.inputbarButtons}>
-        <View style={styles.inputbarButton}>
-          <Button
-            title="Send"
-            color={`${MAIN_BLUE_COLOR}`}
-            onPress={handleSubmit}
+        <View 
+          style={[styles.inputbarButton]} 
+          onTouchStart={handleSubmit}
+        >
+          <FontAwesomeIcon
+            style={[styles.inputbarIcon, styles.iconSend]}  
+            icon={faPaperPlane} 
+            size={25}
           />
         </View>
-        <View style={styles.inputbarButton}>
-          <Button
-            title="Add file"
-            color={`${MAIN_BLUE_COLOR}`}
-            onPress={() => {
-              Actions.camera();
-            }}
+        <View
+          style={[styles.inputbarButton]}
+          onTouchStart={() => Actions.camera()}
+        >
+          <FontAwesomeIcon 
+            style={[styles.inputbarIcon, styles.iconClip]}
+            icon={faPaperclip} 
+            size={25}
           />
         </View>
       </View>

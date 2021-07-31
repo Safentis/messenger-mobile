@@ -2,7 +2,7 @@ export interface Chatroom {
   begun: string | number | Date
   client: string
   created: string | number | Date
-  messages: Message | null
+  messages: Message
   operatorId: string
   operator: string
   saved: string

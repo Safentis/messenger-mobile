@@ -22,6 +22,7 @@
     "@react-native-picker/picker": "^1.16.3",
     "@react-navigation/native": "^3.8.4",
     "@types/react-redux": "^7.1.18",
+    "moment": "^2.29.1",
     "pubnub": "^4.32.1",
     "pubnub-react": "^2.1.0",
     "react": "17.0.1",

@@ -1,53 +1,42 @@
 import { StyleSheet } from 'react-native';
 
 import {
-  MAIN_BLUE_COLOR,
-  MAIN_DARK_GREY_COLOR,
-  MAIN_GREY_COLOR,
+  MAIN_BLACK_COLOR,
   MAIN_WHITE_COLOR,
+  MAIN_LIGHT_BLUE_COLOR,
+  MAIN_DARK_GREY_COLOR,
 } from '../../utils/consts';
 
 export const styles = StyleSheet.create({
   message: {
     margin: 10,
+    marginTop: 15,
+    marginBottom: 15,
   },
   messageInner: {},
   images: {
     // image case
   },
   image: {
-    width: 100,
-    height: 100,
+    minWidth: 100,
+    height: 300,
+    marginBottom: 10,
   },
-  information: {
-    // information case
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'column',
-  },
-  informationOperator: {
-    alignSelf: 'flex-start',
-  },
-  informationClient: {
-    alignSelf: 'flex-end',
-  },
-  writter: {},
-  time: {},
   content: {
     // content case
     minWidth: 200,
     padding: 15,
     borderRadius: 5,
     borderWidth: 0.5,
-    borderColor: MAIN_GREY_COLOR,
-    borderBottomWidth: 0,
+    borderColor: MAIN_LIGHT_BLUE_COLOR,
+    borderBottomWidth: 1,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
-    shadowRadius: 0.2,
+    shadowRadius: 1,
     elevation: 0.5,
   },
   contentOperator: {
-    backgroundColor: MAIN_BLUE_COLOR,
+    backgroundColor: MAIN_LIGHT_BLUE_COLOR,
     marginRight: 'auto',
   },
   contentClient: {
@@ -57,11 +46,33 @@ export const styles = StyleSheet.create({
   text: {
     color: MAIN_WHITE_COLOR,
     fontSize: 16,
+    fontWeight: '400',
   },
   textOperator: {
     color: MAIN_WHITE_COLOR,
   },
   textClient: {
-    color: MAIN_BLUE_COLOR,
+    color: MAIN_BLACK_COLOR,
+  },
+  information: {
+    marginTop: 5,
+  },
+  informationOperator: {
+    flexDirection: 'row',
+  },
+  informationClient: {
+    flexDirection: 'row-reverse',
+  },
+  writter: {
+    color: MAIN_DARK_GREY_COLOR,
+    fontSize: 16,
+    textTransform: 'capitalize',
+    fontWeight: 'bold',
+  },
+  time: {
+    color: MAIN_DARK_GREY_COLOR,
+    fontSize: 16,
+    marginRight: 10,
+    marginLeft: 10,
   },
 });
