@@ -1,11 +1,11 @@
 import { put, StrictEffect } from 'redux-saga/effects';
 
 import { REQUEST_PERSON_SET } from '../actions/application';
-import { RequestPerson } from '../performers/application'
+import { Person } from '../../App.interface';
 
 interface RequestPersonPayload {
     payload: {
-      person: RequestPerson
+      person: Person
     }
 };
 

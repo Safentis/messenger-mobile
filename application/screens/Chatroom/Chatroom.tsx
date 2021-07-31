@@ -48,7 +48,8 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
   //* ---------------------------------------------------------------------
   //* In this case we are getting our chatroom and person
-  const { chatroom, person } = useSelector((state: { application: State }) => {
+  const { chatroom, person, operatorId } = useSelector((state: { application: State }) => {
+    let operatorId: string = '';
     const person: Person = state.application.person;
     const personKey: string = person.key; // chat id
     const chatrooms: chatroomType[] = Object.entries(
@@ -57,11 +58,12 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
     const chatroom: chatroomType = chatrooms.find(
       ([key, value]: chatroomType) => {
+        operatorId = value.operatorId;
         return key === personKey; // if chatroom exist, find returns it
       },
     ) as chatroomType;
 
-    return { chatroom, person };
+    return { chatroom, person, operatorId };
   });
 
   //* ---------------------------------------------------------------------
@@ -84,17 +86,6 @@ const ChatroomInner: FC = (): React.ReactElement => {
         setIsTyping(false);
       }
     }
-  };
-
-  const opacity: Animated.Value = new Animated.Value(0);
-
-  // Will change fadeAnim value to 1 in 5 seconds
-  const animate = () => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 1200,
-      useNativeDriver: true,
-    }).start();
   };
 
   const handleMessage = ({ message }: Envelope) => {
@@ -176,12 +167,14 @@ const ChatroomInner: FC = (): React.ReactElement => {
 
   return (
     <View style={styles.chatroom}>
-      <Namebar messagesLength={messages.length} />
+      <Namebar 
+        messagesLength={messages.length} 
+        operatorId={operatorId}
+        />
       <Messages
         isTyping={isTyping}
         messages={messages}
         person={person}
-        opacity={opacity}
       />
       <Inputbar
         message={message}

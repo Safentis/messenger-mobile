@@ -35,3 +35,10 @@ export interface Person {
   theme: string
   subtheme: string
 };
+
+export interface User {
+  name: string
+  email?: string
+  photo?: string
+  status?: string | boolean
+}
