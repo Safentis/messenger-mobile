@@ -2,11 +2,11 @@ export interface Chatroom {
   begun: string | number | Date
   client: string
   created: string | number | Date
-  messages: Message
+  messages: Message | null
   operatorId: string
   operator: string
   saved: string
-  score: string | null
+  score: string | number | null 
   status: string
   theme: string
   subtheme: string

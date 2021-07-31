@@ -17,7 +17,7 @@ export const routes: Route[] = [
     key: 'question',
     title: 'Question',
     hideNavBar: true,
-    initial: false,
+    initial: true,
     component: Question,
   },
   {

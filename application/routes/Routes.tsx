@@ -54,6 +54,7 @@ const Routes: FC = () => {
     };
 
     Object.entries(chatrooms).find(([key, value]: [string, any]) => {
+      let isComplited: boolean = value.status === 'complited';
       let isNoactive: boolean = value.status === 'noactive';
       let isActive: boolean = value.status === 'active';
       let isKey: boolean = person.key === key;
@@ -64,10 +65,11 @@ const Routes: FC = () => {
         initialState(routes, 'chatroom');
       } else if (person.key.length === 0 && isNoactive) {
         initialState(routes, 'question');
+      } else if (person.key.length === 0 && isComplited) {
+        initialState(routes, 'question');
       }
     });
     
-
   }, [chatrooms]);
 
   //* ------------------------------------------------
@@ -81,7 +83,7 @@ const Routes: FC = () => {
     //* Handlers
     OneSignal.setNotificationWillShowInForegroundHandler(
       notificationReceivedEvent => {
-        Actions.chatroom(); //* actions to chatroom
+        // Actions.chatroom(); //* actions to chatroom
         console.log(
           'OneSignal: notification will show in foreground:',
           notificationReceivedEvent,
@@ -96,7 +98,7 @@ const Routes: FC = () => {
     );
 
     OneSignal.setNotificationOpenedHandler(notification => {
-      Actions.chatroom(); //* actions to chatroom
+      // Actions.chatroom(); //* actions to chatroom
       console.log('OneSignal: notification opened:', notification);
     });
 
