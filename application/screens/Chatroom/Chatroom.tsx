@@ -1,78 +1,53 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { PubNubProvider } from 'pubnub-react';
-import { Animated, View } from 'react-native';
-import PubNub from 'pubnub';
-import { usePubNub } from 'pubnub-react';
-import Pubnub from 'pubnub';
+import { View } from 'react-native';
 
 import Namebar from './Namebar/Namebar';
 import Messages from './Messages/Messages';
 import Inputbar from './Inputbar/Inputbar';
-import usePubnub from '../../hooks/usePabnab';
-import {
-  requestMessage,
-  requestPerson,
-} from '../../redux/performers/application';
+import { requestListener, requestMessage } from '../../redux/performers/application';
+import { useGlobalContext } from '../../App'
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Chatroom.styles';
-import { Message as MessageInterface, Person } from '../../App.interface';
+import { 
+  Message as MessageInterface, 
+  Chatroom as ChatroomInterface,  
+  Person,
+} from '../../App.interface';
 import {
   Signal,
   Envelope,
-  chatroomType,
+  UseSelectorReturn,
   fieldType,
   typingType,
   messageType,
 } from './Chatroom.interface';
 
-const pubnub = new PubNub({
-  subscribeKey: 'sub-c-4e5c7380-df58-11eb-b709-22f598fbfd18',
-  publishKey: 'pub-c-d4239ce3-2f26-42a7-9b3c-730ce6e7510f',
-  ssl: true,
-  presenceTimeout: 130,
-});
-
-const Chatroom = () => {
-  return (
-    <PubNubProvider client={pubnub}>
-      <ChatroomInner />
-    </PubNubProvider>
-  );
-};
-
-const ChatroomInner: FC = (): React.ReactElement => {
+const Chatroom: FC = (): React.ReactElement => {
   const dispatch = useDispatch();
   const [message, onChangeMessage]: fieldType = useState('');
 
   //* ---------------------------------------------------------------------
   //* In this case we are getting our chatroom and person
-  const { chatroom, person, operatorId } = useSelector((state: { application: State }) => {
-    let operatorId: string = '';
+  const { chatroom = {messages: []}, person, operatorId } = useSelector((state: { application: State }): UseSelectorReturn => {
     const person: Person = state.application.person;
-    const personKey: string = person.key; // chat id
-    const chatrooms: chatroomType[] = Object.entries(
-      state.application.chatrooms, // get all chatrooms
-    );
-
-    const chatroom: chatroomType = chatrooms.find(
-      ([key, value]: chatroomType) => {
-        operatorId = value.operatorId;
-        return key === personKey; // if chatroom exist, find returns it
-      },
-    ) as chatroomType;
-
-    return { chatroom, person, operatorId };
+    const chatroom: ChatroomInterface = state.application.database.chatrooms[person.key];
+    const operatorId: string = chatroom?.operatorId
+    return { 
+      chatroom,
+      person,
+      operatorId
+    };
   });
 
   //* ---------------------------------------------------------------------
   //*                         PUBNUB SECTION
   //* ---------------------------------------------------------------------
-
   //* Here we obtain PubNub instance
-  const pubnub: Pubnub = usePubNub(); //* Include pubnub
-  const chatroomChannel: string = `room-${person.key}`; //* main channel
+  const { pubnub } = useGlobalContext();
+  const chatroomChannel = `room-${person.key}`;
+  const [channels]: [string[], Function] = useState([chatroomChannel]);
   const [isTyping, setIsTyping]: typingType = useState(false);
   const [messages, setMessages]: messageType = useState([]);
 
@@ -101,27 +76,28 @@ const ChatroomInner: FC = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    if (pubnub) {
-      //* Set start messages to chat
-      let allMessages: MessageInterface[] | null = Object.values(
-        chatroom[1].messages || [],
-      );
-      let listener = {
-        message: handleMessage,
-        signal: handleSignal,
-      };
+    //* Set start messages to chat
+    let allMessages: MessageInterface[] | null = Object.values(
+      chatroom.messages || [],
+    );
 
-      setMessages(allMessages);
+    let listener = {
+      message: handleMessage,
+      signal: handleSignal,
+    };
 
-      pubnub.setUUID('client');
-      pubnub.addListener(listener);
-      pubnub.subscribe({ channels: [chatroomChannel] });
-      return () => {
-        pubnub.removeListener(listener);
-        pubnub.unsubscribeAll();
-      };
-    }
-  }, [pubnub]);
+    setMessages(allMessages);
+    //* Set listener in store that, remove letter
+    dispatch(requestListener(listener));
+
+    pubnub.setUUID('client');
+    pubnub.addListener(listener);
+    pubnub.subscribe({ channels });
+    return () => {
+      pubnub.removeListener(listener);
+      pubnub.unsubscribeAll();
+    };
+  }, [pubnub, channels]);
 
   //* ---------------------------------------------------------------------
   //* Pubnub handlers
@@ -141,8 +117,10 @@ const ChatroomInner: FC = (): React.ReactElement => {
     let date: Date = new Date();
 
     if (isMessage) {
+      //* Resent input state
       onChangeMessage('');
-
+      //* Send signal to the channel `room-{person-key}` 
+      //* about ending of a type message
       pubnub.signal({
         channel: chatroomChannel,
         message: '0',
@@ -160,7 +138,6 @@ const ChatroomInner: FC = (): React.ReactElement => {
       });
     }
   };
-
   //* ---------------------------------------------------------------------
   //*                         END - PUBNUB SECTION
   //* ---------------------------------------------------------------------
@@ -170,7 +147,7 @@ const ChatroomInner: FC = (): React.ReactElement => {
       <Namebar 
         messagesLength={messages.length} 
         operatorId={operatorId}
-        />
+      />
       <Messages
         isTyping={isTyping}
         messages={messages}

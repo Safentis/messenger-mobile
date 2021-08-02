@@ -1,25 +1,24 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, Button } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { View, Text, TouchableOpacity } from 'react-native';
 import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
-import { requestQueue } from '../../redux/performers/application';
 import useQueue from '../../hooks/useQueue';
 
-import { MAIN_BLUE_COLOR } from '../../utils/consts';
 import { styles } from './Queue.styles';
 import { Actions } from 'react-native-router-flux';
+import { Chatroom } from '../../App.interface';
+import { Alert } from 'react-native';
 
 const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
   //* Redux
-  const dispatch = useDispatch();
-  const { positionInQueue, person, chatrooms } = useSelector(
+  const [positionInQueue, setPositionInQueue] = useState<number>(0) 
+  const { person, chatrooms } = useSelector(
     (state: { application: State }) => {
       return {
-        positionInQueue: state.application.positionInQueue,
-        chatrooms: state.application.chatrooms,
+        chatrooms: state.application.database.chatrooms,
         person: state.application.person,
       };
     },
@@ -28,21 +27,26 @@ const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
   //* Function for handling
   useQueue({ chatrooms, person }, (positionInQueue: number) => {
-    dispatch(requestQueue({ positionInQueue }));
+    setPositionInQueue(positionInQueue);
   });
 
   useEffect(() => {
-    Object.entries(chatrooms).find(([key, value]: [string, any]) => {
-      if (key === person.key && value.status === 'active') {
-        Actions.chatroom();
-      }
-    });
+    let chatroom: Chatroom | undefined | null = chatrooms[person.key];
+    if (chatroom && chatroom.status === 'active') {
+      Actions.chatroom();
+    }
   }, [chatrooms]);
 
   //* ----------------------------------------------
   // With this function, we expose tags for onsignals,
   // when operator enters in chatroom we are getting push-info
+  const NOTIFICATION_TITLE = 'Notification';
+  const NOTIFICATION_MESSAGE = 'You will receive a notification when the dialogue starts';
   const handleReminde = (): void => {
+    Alert.alert(
+      NOTIFICATION_TITLE, 
+      NOTIFICATION_MESSAGE
+    );
     OneSignal.sendTag('dialog', person.key);
   };
 
@@ -55,13 +59,11 @@ const Queue: FC = (): React.ReactElement => {
           You will be answered soon
         </Text>
       </View>
-      <View style={styles.queueButton}>
-        <Button
-          title="Remind when it's turn"
-          color={`${MAIN_BLUE_COLOR}`}
-          onPress={handleReminde}
-        />
-      </View>
+      <TouchableOpacity style={styles.queueButton} onPress={handleReminde}>
+        <Text style={styles.queueButtonText}>
+          Remind when it's turn
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

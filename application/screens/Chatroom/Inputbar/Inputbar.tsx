@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Actions } from 'react-native-router-flux';
-import { Button, TextInput, View } from 'react-native';
+import { TouchableOpacity, TextInput, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPaperclip, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
@@ -25,26 +25,26 @@ const Inputbar: FC<Props> = ({
         placeholderTextColor={MAIN_DARK_GREY_COLOR}
       />
       <View style={styles.inputbarButtons}>
-        <View 
+        <TouchableOpacity 
           style={[styles.inputbarButton]} 
-          onTouchStart={handleSubmit}
+          onPress={handleSubmit}
         >
           <FontAwesomeIcon
             style={[styles.inputbarIcon, styles.iconSend]}  
             icon={faPaperPlane} 
             size={25}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.inputbarButton]}
-          onTouchStart={() => Actions.camera()}
+          onPress={() => Actions.camera()}
         >
           <FontAwesomeIcon 
             style={[styles.inputbarIcon, styles.iconClip]}
             icon={faPaperclip} 
             size={25}
           />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

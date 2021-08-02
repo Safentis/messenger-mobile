@@ -13,7 +13,7 @@ export interface Chatroom {
 }
 
 export interface Client {
-  theme: string[]
+  themes: string[]
   subthemes: string[]
 }
 

@@ -1,23 +1,31 @@
 import React, { FC, useState } from 'react';
-import { Button, Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { requestPerson } from '../../redux/performers/application';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons';
-import { State } from '../../redux/reducers/application/application.interface';
 
+import { requestPerson } from '../../redux/performers/application';
+import { useGlobalContext } from '../../App'
+
+
+import { State } from '../../redux/reducers/application/application.interface';
+import { Person } from '../../App.interface';
 import { styles } from './Complite.styles';
 import { 
   MAIN_GOLD_COLOR, 
   MAIN_GREY_COLOR 
 } from '../../utils/consts';
 
+
 const Complite: FC = () => {
   const dispatch = useDispatch();
-  const person = useSelector((state: { application: State }) => {
-    return state.application.person;
+  const { pubnub } = useGlobalContext();
+  const { person, listener } = useSelector((state: { application: State }) => {
+    return {
+      person: state.application.person as Person,
+      listener: state.application.listener,
+    }; 
   });
 
   const stars: number[] = [...Array(5).keys()];
@@ -49,6 +57,12 @@ const Complite: FC = () => {
         subtheme: '',
       }));
 
+      //* in this case, we are deleling all subscribes
+      //* and listeners
+      pubnub.unsubscribeAll();
+      pubnub.deleteUser('client');
+      pubnub.removeListener(listener);
+
       Actions.question();
     } catch (error) {
       console.error(error.code);
@@ -67,7 +81,7 @@ const Complite: FC = () => {
       <View style={styles.body}>
         {stars.map(
           (star: number, index: number): React.ReactNode => (
-            <View key={index} onTouchStart={() => setScore(star + 1)}>
+            <TouchableOpacity key={index} onPress={() => setScore(star + 1)}>
               <FontAwesomeIcon
                 style={{
                   color: score <= star 
@@ -77,12 +91,12 @@ const Complite: FC = () => {
                 icon={faStar}
                 size={50}
               />
-            </View>
+            </TouchableOpacity>
           ),
         )}
       </View>
       <View style={styles.footer}>
-        <View style={styles.button} onTouchStart={handleScore}>
+        <TouchableOpacity style={styles.button} onPress={handleScore}>
           <Text style={styles.buttonText}>
             Appreciate
           </Text>
@@ -91,7 +105,7 @@ const Complite: FC = () => {
             size={25}
             icon={faCheck} 
           />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

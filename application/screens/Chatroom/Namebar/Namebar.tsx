@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,7 @@ import { User } from '../../../App.interface';
 
 const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
   const [operator, setOperator]: [User, Function] = useState({
-    name: '',
+    name: 'operator',
   });
 
   useEffect(() => {
@@ -37,13 +37,13 @@ const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
         </Text>
       </View>
       {messagesLength > 0 ? (
-        <View
+        <TouchableOpacity
           style={[styles.namebarButton, styles.button]}
-          onTouchStart={() => Actions.complite()}
+          onPress={() => Actions.complite()}
         >
-          <Text style={styles.buttonText}>Complite</Text>
+            <Text style={styles.buttonText}>Complite</Text>
           <FontAwesomeIcon style={styles.buttonIcon} size={20} icon={faStar} />
-        </View>
+        </TouchableOpacity>
       ) : null}
     </View>
   );

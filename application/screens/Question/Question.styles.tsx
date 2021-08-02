@@ -32,7 +32,22 @@ export const styles = StyleSheet.create({
       marginTop: 5,
     },
     questionButton: {
+      alignItems: 'center',
+      backgroundColor: MAIN_BLUE_COLOR,
+      borderColor: MAIN_BLUE_COLOR,
+      borderRadius: 5,
+      elevation: .75,
+      flexDirection: 'row',
+      justifyContent: 'center',
       marginTop: 60,
+      padding: 7.5,
+      shadowColor: MAIN_BLUE_COLOR,
+      shadowOffset: { width: 0, height: .1 },
+      shadowOpacity: 0.8,
+      shadowRadius: 5,
+    },
+    questionButtonText: {
+      color: MAIN_WHITE_COLOR,
     },
     input: {
       backgroundColor: MAIN_WHITE_COLOR,
