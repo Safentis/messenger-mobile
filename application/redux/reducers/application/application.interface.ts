@@ -1,13 +1,17 @@
+import { Client } from '../../../App.interface';
+
 export interface State {
-  chatrooms: any
-  client: any
-  positionInQueue: number
+  listener: object;
+  database: {
+    chatrooms: any;
+    client: Client;
+  };
   person: {
-    name: string,
-    key: string,
-    theme: string,
-    subtheme: string,
-  }
+    name: string;
+    key: string;
+    theme: string;
+    subtheme: string;
+  };
 }
 
 export interface Action {

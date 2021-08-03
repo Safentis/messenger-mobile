@@ -10,7 +10,8 @@ import {
   Button, 
   TextInput, 
   ScrollView, 
-  SafeAreaView 
+  SafeAreaView,
+  TouchableOpacity 
 } from 'react-native';
 
 import { createChatroom, HandleCallback } from '../../utils/functions';
@@ -31,7 +32,7 @@ const Question: FC = (): React.ReactElement => {
   //* ----------------------------------------------------------
   //* Ref to the themes
   const client = useSelector((state: { application: State }) => {
-    return state.application.client;
+    return state.application?.database?.client;
   });
   
   // Object client check
@@ -139,13 +140,11 @@ const Question: FC = (): React.ReactElement => {
             </View>
           </View>
 
-          <View style={styles.questionButton}>
-            <Button
-              title="Enter"
-              color={`${MAIN_BLUE_COLOR}`}
-              onPress={handleQuestion}
-            />
-          </View>
+          <TouchableOpacity style={styles.questionButton} onPress={handleQuestion}>
+            <Text style={[styles.label, styles.questionButtonText]}>
+              Enter
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -2,7 +2,7 @@ export interface Chatroom {
   begun: string | number | Date
   client: string
   created: string | number | Date
-  messages: Message | null
+  messages: Message
   operatorId: string
   operator: string
   saved: string
@@ -13,7 +13,7 @@ export interface Chatroom {
 }
 
 export interface Client {
-  theme: string[]
+  themes: string[]
   subthemes: string[]
 }
 
@@ -35,3 +35,10 @@ export interface Person {
   theme: string
   subtheme: string
 };
+
+export interface User {
+  name: string
+  email?: string
+  photo?: string
+  status?: string | boolean
+}

@@ -1,18 +1,16 @@
 import React, { FC } from 'react';
-import { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
 
+import useLastactivity from '../../hooks/useLastactivity';
+
 import { Props, messageContent } from './Message.interface';
-
 import { styles } from './Message.styles';
-
 
 const Message: FC<Props> = ({
   content,
   writtenBy,
   timestamp,
   images = [],
-  name,
 }): React.ReactElement => {
   //* -------------------------------------------------------------------------
   //* Classes for the message, they depend from writtenBy field 
@@ -47,14 +45,16 @@ const Message: FC<Props> = ({
     </View>
   );
 
+  const time = useLastactivity(timestamp); //* hook that returns last activity
+
   return (
     <View style={[styles.message]}>
       <View style={styles.messageInner}>
           {IMAGES}
           {CONTENT}
         <View style={[styles.information, informationClass]}>
-          <Text style={[styles.writter]}>{isOperator ? writtenBy : name}</Text>
-          <Text style={[styles.time]}>{timestamp}</Text>
+          <Text style={[styles.writter]}>{isOperator ? writtenBy : "you"}</Text>
+          <Text style={[styles.time]}>{time}</Text>
         </View>
       </View>
     </View>

@@ -1,21 +1,23 @@
 import React, { FC, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import {
   EmitterSubscription,
   Keyboard,
   SafeAreaView,
   ScrollView,
-  Animated,
   View,
+  Text,
 } from 'react-native';
 
 import Message from '../../../components/Message/Message';
 import Typing from '../../../components/Typing/Typing';
 
-import { styles } from './Messages.styles';
-import { Props } from './Messages.interface';
 import { Message as MessageInterface } from '../../../App.interface';
+import { Props } from './Messages.interface';
+import { styles } from './Messages.styles';
 
-const Messages: FC<Props> = ({ messages, person, isTyping, opacity }) => {
+const Messages: FC<Props> = ({ messages = [], person, isTyping }) => {
   const scrollView: React.MutableRefObject<null | any> = useRef(null);
   const handleScroll = () => {
     scrollView.current.scrollToEnd({
@@ -35,7 +37,7 @@ const Messages: FC<Props> = ({ messages, person, isTyping, opacity }) => {
     <View style={styles.messages}>
       <SafeAreaView>
         <ScrollView ref={scrollView} onContentSizeChange={handleScroll}>
-          {messages &&
+          {messages.length > 0 ? (
             messages
               .sort(
                 (
@@ -44,13 +46,21 @@ const Messages: FC<Props> = ({ messages, person, isTyping, opacity }) => {
                 ): number =>
                   +new Date(messageA.timestamp) - +new Date(messageB.timestamp),
               )
-              .map((message: MessageInterface, index: number) =>
-                <Message 
-                  key={index} 
-                  {...message} 
-                  name={person.name} 
-                />
-              )}
+              .map((message: MessageInterface, index: number) => (
+                <Message {...message} key={index} name={person.name} />
+              ))
+          ) : (
+            <View style={styles.sign}>
+              <Text style={styles.signText}>
+                No messages
+              </Text>
+              <FontAwesomeIcon 
+                style={[styles.signIcon]} 
+                size={25}
+                icon={faEnvelope}
+              />
+            </View>
+          )}
           <Typing isTyping={isTyping} />
         </ScrollView>
       </SafeAreaView>

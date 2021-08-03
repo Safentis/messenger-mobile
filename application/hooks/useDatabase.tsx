@@ -31,7 +31,7 @@ const useDatabase = (ref: Ref, callback: Callback): any => {
       console.error(err);
       console.error(err.stack);
     }
-  }, []);
+  }, [ref]);
 
   return null;
 };

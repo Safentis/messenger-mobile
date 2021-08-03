@@ -1,4 +1,4 @@
-import { Chatroom, Message } from '../../App.interface';
+import { Chatroom, Message, Person } from '../../App.interface';
 
 export interface Signal {
   channel: string;
@@ -12,6 +12,12 @@ export interface Envelope {
   message: Message;
   publisher: string;
   timetoken: string | number | Date;
+}
+
+export interface UseSelectorReturn {
+  chatroom: Chatroom;
+  person: Person;
+  operatorId: string;
 }
 
 export type chatroomType = [string, Chatroom];
