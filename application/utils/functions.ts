@@ -1,10 +1,12 @@
+import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
 import database, {
   firebase,
   FirebaseDatabaseTypes,
 } from '@react-native-firebase/database';
-import { Person, User } from '../App.interface';
 
+import { Person, User } from '../App.interface';
 import { DIALOG_STATUS, DIALOG_ID } from './consts';
+import { TakePictureResponse } from 'react-native-camera';
 
 export interface CreateChatroom {
   name: string;
@@ -113,4 +115,55 @@ export const createUser = async ({uid, user}: CreateUser): Promise<void> => {
   } catch(error) {
     handleError(error);
   }
+};
+
+export const getDownloadURL = (data: TakePictureResponse) => {
+  const name: string = Math.random().toString(32).slice(2, 12);
+  const base64: string = data.base64 as string;
+  const params: object = { contentType: 'image/jpg' };
+  const uploadTask: FirebaseStorageTypes.Task = storage()
+      .ref('images/' + name)
+      .putString(base64, 'base64', params);
+
+  return new Promise((resolve) => {
+    uploadTask.on(
+      firebase.storage.TaskEvent.STATE_CHANGED,
+      (snapshot) => {
+        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED:
+            console.log("Upload is paused");
+            break;
+          case firebase.storage.TaskState.RUNNING:
+            console.log("Upload is running");
+            break;
+        }
+      },
+      (error) => {
+        switch (error.code) {
+          case "storage/unauthorized":
+            throw new Error(
+              `User doesn't have permission to access the object`
+            );
+            break;
+          case "storage/canceled":
+            throw new Error(`User canceled the upload`);
+            break;
+          case "storage/unknown":
+            throw new Error(
+              `Unknown error occurred, inspect error.serverResponse`
+            );
+            break;
+        }
+      },
+      () => {
+        uploadTask?.snapshot?.ref.getDownloadURL().then((downloadURL: string) => {
+          console.log("File available at", downloadURL);
+          resolve(downloadURL);
+        });
+      }
+    );
+  });
 };

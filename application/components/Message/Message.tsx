@@ -28,12 +28,14 @@ const Message: FC<Props> = ({
   const IMAGES: messageContent = images.length > 0 && (
     <View style={styles.images}>
       {images.map(
-        (uri: string, index: number): React.ReactElement => (
-          <Image 
+        (uri: string, index: number): React.ReactElement | null => (
+          uri.length > 0 
+          ? <Image 
             style={styles.image} 
             source={{ uri }} 
             key={index}
           />
+          : null
         ),
       )}
     </View>

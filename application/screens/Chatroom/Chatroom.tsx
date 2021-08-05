@@ -1,18 +1,24 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View } from 'react-native';
+import { RNCamera, TakePictureResponse } from 'react-native-camera';
+import { View, ToastAndroid } from 'react-native';
 
+import { useGlobalContext } from '../../App';
+import { getDownloadURL } from '../../utils/functions';
+import Preview from './Preview/Preview';
 import Namebar from './Namebar/Namebar';
 import Messages from './Messages/Messages';
 import Inputbar from './Inputbar/Inputbar';
-import { requestListener, requestMessage } from '../../redux/performers/application';
-import { useGlobalContext } from '../../App'
+import {
+  requestListener,
+  requestMessage,
+} from '../../redux/performers/application';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Chatroom.styles';
-import { 
-  Message as MessageInterface, 
-  Chatroom as ChatroomInterface,  
+import {
+  Message as MessageInterface,
+  Chatroom as ChatroomInterface,
   Person,
 } from '../../App.interface';
 import {
@@ -22,24 +28,56 @@ import {
   fieldType,
   typingType,
   messageType,
+  imageType,
+  imageBaseType,
 } from './Chatroom.interface';
 
 const Chatroom: FC = (): React.ReactElement => {
   const dispatch = useDispatch();
-  const [message, onChangeMessage]: fieldType = useState('');
+  const [message, onChangeMessage]: fieldType = useState<string>('');
+
+  //* ---------------------------------------------------------------------
+  //* Toast
+  const toastMessage = (content: string): void => {
+    ToastAndroid.showWithGravityAndOffset(
+      content,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+      25,
+      50,
+    );
+  };
+
+  //* ---------------------------------------------------------------------
+  //* Handle image
+  const [url, setUrl]: imageType = useState<string>('');
+
+  const handleImage = async (camera: RNCamera, optionsSnapshot: object) => {
+    toastMessage('Please wait, image upload !');
+    const data: TakePictureResponse = await camera.takePictureAsync(optionsSnapshot);
+    const url: string = (await getDownloadURL(data)) as string;
+    setUrl(url);
+  };
+
+  const handleDeleteImage = () => {
+    setUrl('');
+  };
 
   //* ---------------------------------------------------------------------
   //* In this case we are getting our chatroom and person
-  const { chatroom, person, operatorId } = useSelector((state: { application: State }): UseSelectorReturn => {
-    const person: Person = state.application.person;
-    const chatroom: ChatroomInterface = state.application.database.chatrooms[person.key];
-    const operatorId: string = chatroom?.operatorId
-    return { 
-      chatroom,
-      person,
-      operatorId
-    };
-  });
+  const { chatroom, person, operatorId } = useSelector(
+    (state: { application: State }): UseSelectorReturn => {
+      const person: Person = state.application.person;
+      const chatroom: ChatroomInterface =
+        state.application.database.chatrooms[person.key];
+      const operatorId: string = chatroom?.operatorId;
+      return {
+        chatroom,
+        person,
+        operatorId,
+      };
+    },
+  );
 
   //* ---------------------------------------------------------------------
   //*                         PUBNUB SECTION
@@ -47,9 +85,13 @@ const Chatroom: FC = (): React.ReactElement => {
   //* Here we obtain PubNub instance
   const { pubnub } = useGlobalContext();
   const chatroomChannel: string = `room-${person.key}`;
-  const [channels]: [string[], Function] = useState<string[]>([chatroomChannel]);
+  const [channels]: [string[], Function] = useState<string[]>([
+    chatroomChannel,
+  ]);
   const [isTyping, setIsTyping]: typingType = useState<boolean>(false);
-  const [messages, setMessages]: messageType = useState<MessageInterface[]>(chatroom?.messages ? Object.values(chatroom.messages) : []);
+  const [messages, setMessages]: messageType = useState<MessageInterface[]>(
+    chatroom?.messages ? Object.values(chatroom.messages) : [],
+  );
 
   //* ---------------------------------------------------------------------
   //* Pubnub listeners
@@ -78,7 +120,7 @@ const Chatroom: FC = (): React.ReactElement => {
   useEffect(() => {
     //* Set start messages to chat
     // setMessages(chatroom.messages);
-    
+
     let listener = {
       message: handleMessage,
       signal: handleSignal,
@@ -98,41 +140,45 @@ const Chatroom: FC = (): React.ReactElement => {
 
   //* ---------------------------------------------------------------------
   //* Pubnub handlers
-  const handleKeyUp = () => {
+  const handleKeyUp = async () => {
     let inputHasText = message.length > 0;
 
     if (inputHasText || !inputHasText) {
-      pubnub.signal({
+      await pubnub.signal({
         channel: chatroomChannel,
         message: inputHasText ? '1' : '0',
       });
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let isMessage: boolean = message.trim().length > 0;
+    let isUrl: boolean = url.length > 0;
     let date: Date = new Date();
 
-    if (isMessage) {
+    if (isMessage || isUrl) {
       //* Resent input state
       onChangeMessage('');
-      //* Send signal to the channel `room-{person-key}` 
+
+      //* Send signal to the channel `room-{person-key}`
       //* about ending of a type message
-      pubnub.signal({
+      await pubnub.signal({
         channel: chatroomChannel,
         message: '0',
       });
 
       // Publish our message to the channel `room-{person-key}`
-      pubnub.publish({
+      await pubnub.publish({
         channel: chatroomChannel,
         message: {
           content: message,
           writtenBy: 'client',
-          images: [],
+          images: isUrl ? [url] : [],
           timestamp: date,
         },
       });
+
+      setUrl('');
     }
   };
   //* ---------------------------------------------------------------------
@@ -141,21 +187,16 @@ const Chatroom: FC = (): React.ReactElement => {
 
   return (
     <View style={styles.chatroom}>
-      <Namebar 
-        messagesLength={messages.length} 
-        operatorId={operatorId}
-      />
-      <Messages
-        isTyping={isTyping}
-        messages={messages}
-        person={person}
-      />
+      <Namebar messagesLength={messages.length} operatorId={operatorId} />
+      <Messages isTyping={isTyping} messages={messages} person={person} />
       <Inputbar
         message={message}
+        handleImage={handleImage}
         handleKeyUp={handleKeyUp}
         handleSubmit={handleSubmit}
         onChangeMessage={onChangeMessage}
       />
+      <Preview image={url} handleDeleteImage={handleDeleteImage} />
     </View>
   );
 };

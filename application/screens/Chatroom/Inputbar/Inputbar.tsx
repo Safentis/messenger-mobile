@@ -10,6 +10,7 @@ import { MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
 
 const Inputbar: FC<Props> = ({
   message,
+  handleImage,
   onChangeMessage,
   handleKeyUp,
   handleSubmit,
@@ -37,7 +38,7 @@ const Inputbar: FC<Props> = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.inputbarButton]}
-          onPress={() => Actions.camera()}
+          onPress={() => Actions.camera({handleImage})}
         >
           <FontAwesomeIcon 
             style={[styles.inputbarIcon, styles.iconClip]}

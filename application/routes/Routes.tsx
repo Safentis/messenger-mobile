@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Router, Scene } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
 
-import Question from '../screens/Question/Question';
+import Camera from '../screens/Camera/Camera';
 import Queue from '../screens/Queue/Queue';
+import Question from '../screens/Question/Question';
 import Chatroom from '../screens/Chatroom/Chatroom';
 import Complite from '../screens/Complite/Complite';
 import useDatabase from '../hooks/useDatabase';
@@ -12,6 +13,7 @@ import { requestDatabase } from '../redux/performers/application';
 
 import { State } from '../redux/reducers/application/application.interface';
 import { styles } from './Routes.styles';
+import { Modal } from 'react-native';
 
 const Routes: FC = (): React.ReactElement => {
   //* ------------------------------------------------
@@ -103,6 +105,7 @@ const Routes: FC = (): React.ReactElement => {
           }
         />
         <Scene key="complite" component={Complite} hideNavBar={true} />
+        <Scene key="camera" component={Camera} hideNavBar={true} />
       </Scene>
     </Router>
   );
