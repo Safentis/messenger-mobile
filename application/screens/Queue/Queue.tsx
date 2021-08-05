@@ -1,15 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import useQueue from '../../hooks/useQueue';
 
 import { styles } from './Queue.styles';
-import { Actions } from 'react-native-router-flux';
 import { Chatroom } from '../../App.interface';
-import { Alert } from 'react-native';
 
 const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
@@ -42,12 +41,16 @@ const Queue: FC = (): React.ReactElement => {
   // when operator enters in chatroom we are getting push-info
   const NOTIFICATION_TITLE = 'Notification';
   const NOTIFICATION_MESSAGE = 'You will receive a notification when the dialogue starts';
-  const handleReminde = (): void => {
-    Alert.alert(
-      NOTIFICATION_TITLE, 
-      NOTIFICATION_MESSAGE
-    );
-    OneSignal.sendTag('dialog', person.key);
+  const handleReminde = async () => {
+    await OneSignal.sendTag('dialog', person.key);
+    await OneSignal.getTags((tags) => {
+      if ('dialog' in tags) {
+        Alert.alert(
+          NOTIFICATION_TITLE, 
+          NOTIFICATION_MESSAGE
+        );
+      }
+    });
   };
 
   return (

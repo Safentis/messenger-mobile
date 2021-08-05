@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     color: MAIN_WHITE_COLOR,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
   },
   textOperator: {
@@ -55,6 +55,7 @@ export const styles = StyleSheet.create({
     color: MAIN_BLACK_COLOR,
   },
   information: {
+    alignItems: 'center',
     marginTop: 5,
   },
   informationOperator: {
@@ -65,13 +66,13 @@ export const styles = StyleSheet.create({
   },
   writter: {
     color: MAIN_DARK_GREY_COLOR,
-    fontSize: 16,
+    fontSize: 14,
     textTransform: 'capitalize',
     fontWeight: 'bold',
   },
   time: {
     color: MAIN_DARK_GREY_COLOR,
-    fontSize: 16,
+    fontSize: 14,
     marginRight: 10,
     marginLeft: 10,
   },

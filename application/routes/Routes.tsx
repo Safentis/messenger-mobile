@@ -13,7 +13,7 @@ import { requestDatabase } from '../redux/performers/application';
 import { State } from '../redux/reducers/application/application.interface';
 import { styles } from './Routes.styles';
 
-const Routes: FC = () => {
+const Routes: FC = (): React.ReactElement => {
   //* ------------------------------------------------
   //* In this case we are getting an all data from database
   //* and set them to redux store.

@@ -7,6 +7,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { Props } from './Namebar.interface';
 import { styles } from './Namebar.styles';
 import { User } from '../../../App.interface';
+import { fetchUser } from '../../../utils/functions';
 
 const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
   const [operator, setOperator]: [User, Function] = useState({
@@ -15,16 +16,8 @@ const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
 
   useEffect(() => {
     (async () => {
-      try {
-        const req = await fetch(
-          `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/users/${operatorId}.json`,
-        );
-        const res = await req.json();
-        setOperator(res);
-      } catch (err) {
-        console.error(err);
-        console.error(err.message);
-      }
+      const res = await fetchUser(operatorId);
+      setOperator(res);
     })();
   }, []);
 
@@ -33,7 +26,7 @@ const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
       <View style={styles.namebarContent}>
         <Text style={styles.namebarText}>Dialog with:</Text>
         <Text style={[styles.namebarName]}>
-          {operator.name}
+          {operator?.name}
         </Text>
       </View>
       {messagesLength > 0 ? (

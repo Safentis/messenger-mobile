@@ -6,7 +6,7 @@ import { faPaperclip, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 import { Props } from './Inputbar.interface';
 import { styles } from './Inputbar.styles';
-import { MAIN_BLUE_COLOR, MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
+import { MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
 
 const Inputbar: FC<Props> = ({
   message,

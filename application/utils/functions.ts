@@ -2,6 +2,7 @@ import database, {
   firebase,
   FirebaseDatabaseTypes,
 } from '@react-native-firebase/database';
+import { Person, User } from '../App.interface';
 
 import { DIALOG_STATUS, DIALOG_ID } from './consts';
 
@@ -18,6 +19,12 @@ export interface HandleCallback {
 
 type callbackfunc = ({ status, key }: HandleCallback) => void;
 type databasereftype = FirebaseDatabaseTypes.Reference;
+
+export const handleError = (error: Error): never | void => {
+  console.error('\nERROR: ', error);
+  console.error('\nERROR_MESSAGE: ', error.message);
+  console.error('\nERROR_STACK: ', error.stack);
+};
 
 export const createChatroom = async (
   {
@@ -49,8 +56,61 @@ export const createChatroom = async (
       callback({ status: true, key: databaseKey });
     });
   } catch (error) {
-    console.error(error.status);
-    console.error(error.message);
+    handleError(error);
     callback({ status: false, key: '' });
+  }
+};
+
+export const complitedDialog = async (person: Person, score: number): Promise<void> => {
+  try {
+    await fetch(
+      `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${person.key}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'complited',
+          score,
+        }),
+      },
+    );
+  } catch(error) {
+    handleError(error);
+  }
+}
+
+export const fetchUser = async (operatorId: string) => {
+  try {
+    const req = await fetch(`https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/users/${operatorId}.json`);
+    const res = await req.json();
+    return res;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+interface CreateUser {
+  uid: string;
+  user: User;
+}
+
+export const createUser = async ({uid, user}: CreateUser): Promise<void> => {
+  try {
+    await fetch(
+      `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/users/${uid}.json`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: user.name,
+        }),
+      }
+    );
+  } catch(error) {
+    handleError(error);
   }
 };

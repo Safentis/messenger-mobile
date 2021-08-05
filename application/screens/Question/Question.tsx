@@ -14,12 +14,11 @@ import {
   TouchableOpacity 
 } from 'react-native';
 
-import { createChatroom, HandleCallback } from '../../utils/functions';
-import { requestPerson } from '../../redux/performers/application';
-import { State } from '../../redux/reducers/application/application.interface';
 
-import { MAIN_BLUE_COLOR } from '../../utils/consts';
+import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Question.styles';
+import { requestPerson } from '../../redux/performers/application';
+import { createChatroom, createUser, HandleCallback } from '../../utils/functions';
 
 type action = React.Dispatch<React.SetStateAction<string>>;
 type field = [string, action];
@@ -54,10 +53,11 @@ const Question: FC = (): React.ReactElement => {
   const ALERT_TITLE: string = 'Issue';
   const ALERT_FIELDS_EMPTY: string = 'Not all fields are filled';
   
-  const handleStatus = ({ status, key }: HandleCallback): void => {
+  const handleStatus = async ({ status, key }: HandleCallback): Promise<void> => {
     if (status) {
       Actions.queue();
-      dispatch(
+      await createUser({uid: key, user: { name }});
+      await dispatch(
         requestPerson({
           subtheme: selectedSubtheme,
           theme: selectedTheme,

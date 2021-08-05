@@ -30,7 +30,7 @@ const Chatroom: FC = (): React.ReactElement => {
 
   //* ---------------------------------------------------------------------
   //* In this case we are getting our chatroom and person
-  const { chatroom = {messages: []}, person, operatorId } = useSelector((state: { application: State }): UseSelectorReturn => {
+  const { chatroom, person, operatorId } = useSelector((state: { application: State }): UseSelectorReturn => {
     const person: Person = state.application.person;
     const chatroom: ChatroomInterface = state.application.database.chatrooms[person.key];
     const operatorId: string = chatroom?.operatorId
@@ -46,14 +46,14 @@ const Chatroom: FC = (): React.ReactElement => {
   //* ---------------------------------------------------------------------
   //* Here we obtain PubNub instance
   const { pubnub } = useGlobalContext();
-  const chatroomChannel = `room-${person.key}`;
-  const [channels]: [string[], Function] = useState([chatroomChannel]);
-  const [isTyping, setIsTyping]: typingType = useState(false);
-  const [messages, setMessages]: messageType = useState([]);
+  const chatroomChannel: string = `room-${person.key}`;
+  const [channels]: [string[], Function] = useState<string[]>([chatroomChannel]);
+  const [isTyping, setIsTyping]: typingType = useState<boolean>(false);
+  const [messages, setMessages]: messageType = useState<MessageInterface[]>(chatroom?.messages ? Object.values(chatroom.messages) : []);
 
   //* ---------------------------------------------------------------------
   //* Pubnub listeners
-  const handleSignal = (signal: Signal) => {
+  const handleSignal = (signal: Signal): void => {
     if (signal.publisher !== 'client') {
       if (signal.message.toString() === '1') {
         setIsTyping(true);
@@ -63,7 +63,7 @@ const Chatroom: FC = (): React.ReactElement => {
     }
   };
 
-  const handleMessage = ({ message }: Envelope) => {
+  const handleMessage = ({ message }: Envelope): void => {
     setMessages((msgs: MessageInterface[]) => [...msgs, message]);
 
     if (message.writtenBy === 'client') {
@@ -77,16 +77,13 @@ const Chatroom: FC = (): React.ReactElement => {
 
   useEffect(() => {
     //* Set start messages to chat
-    let allMessages: MessageInterface[] | null = Object.values(
-      chatroom.messages || [],
-    );
-
+    // setMessages(chatroom.messages);
+    
     let listener = {
       message: handleMessage,
       signal: handleSignal,
     };
 
-    setMessages(allMessages);
     //* Set listener in store that, remove letter
     dispatch(requestListener(listener));
 

@@ -7,8 +7,7 @@ import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons';
 
 import { requestPerson } from '../../redux/performers/application';
 import { useGlobalContext } from '../../App'
-
-
+import { complitedDialog } from '../../utils/functions';
 import { State } from '../../redux/reducers/application/application.interface';
 import { Person } from '../../App.interface';
 import { styles } from './Complite.styles';
@@ -29,27 +28,14 @@ const Complite: FC = () => {
   });
 
   const stars: number[] = [...Array(5).keys()];
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<number>(0);
 
   const handleScore = async (): Promise<void> => {
     //* is score is equal of the zerro
     if (score === 0) return;
 
     try {
-      await fetch(
-        `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${person.key}.json`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: 'complited',
-            score,
-          }),
-        },
-      );
-
+      await complitedDialog(person, score); //* from utils/functions
       await dispatch(requestPerson({
         name: '',
         key: '',
