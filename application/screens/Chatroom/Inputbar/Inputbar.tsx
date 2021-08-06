@@ -10,7 +10,7 @@ import { MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
 
 const Inputbar: FC<Props> = ({
   message,
-  handleImage,
+  handleAddImage,
   onChangeMessage,
   handleKeyUp,
   handleSubmit,
@@ -26,23 +26,23 @@ const Inputbar: FC<Props> = ({
         placeholderTextColor={MAIN_DARK_GREY_COLOR}
       />
       <View style={styles.inputbarButtons}>
-        <TouchableOpacity 
-          style={[styles.inputbarButton]} 
+        <TouchableOpacity
+          style={[styles.inputbarButton]}
           onPress={handleSubmit}
         >
           <FontAwesomeIcon
-            style={[styles.inputbarIcon, styles.iconSend]}  
-            icon={faPaperPlane} 
+            style={[styles.inputbarIcon, styles.iconSend]}
+            icon={faPaperPlane}
             size={25}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.inputbarButton]}
-          onPress={() => Actions.camera({handleImage})}
+          onPress={() => Actions.camera({ handleAddImage })}
         >
-          <FontAwesomeIcon 
+          <FontAwesomeIcon
             style={[styles.inputbarIcon, styles.iconClip]}
-            icon={faPaperclip} 
+            icon={faPaperclip}
             size={25}
           />
         </TouchableOpacity>

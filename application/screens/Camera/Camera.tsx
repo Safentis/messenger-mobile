@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCamera, faSave } from '@fortawesome/free-solid-svg-icons';
+import React, { FC } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { RNCamera } from 'react-native-camera';
+import { Actions } from 'react-native-router-flux';
 
 import { styles } from './Camera.styles';
 import {
@@ -10,13 +11,17 @@ import {
   ndroidRecordAudioPermissionOptions,
   optionsSnapshot,
 } from './Camera.settings';
-import { Actions } from 'react-native-router-flux';
 
 interface Props {
-  handleImage: Function
+  handleAddImage: Function;
 }
 
-const Camera: FC<Props> = ({handleImage}): React.ReactElement => {
+const Camera: FC<Props> = ({ handleAddImage }): React.ReactElement => {
+  const handlePress = async (camera: RNCamera): Promise<void> => {
+    await handleAddImage(camera, optionsSnapshot);
+    Actions.pop();
+  };
+
   return (
     <View style={styles.container}>
       <RNCamera
@@ -38,10 +43,7 @@ const Camera: FC<Props> = ({handleImage}): React.ReactElement => {
               <View>
                 <View style={styles.captureWrapper}>
                   <TouchableOpacity
-                    onPress={ async () => {
-                      await handleImage(camera, optionsSnapshot);
-                      Actions.pop();
-                    }}
+                    onPress={() => handlePress(camera)}
                     style={styles.capture}
                   >
                     <FontAwesomeIcon icon={faCamera} />

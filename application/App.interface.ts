@@ -10,6 +10,7 @@ export interface Chatroom {
   status: string
   theme: string
   subtheme: string
+  complited: string | number | Date
 }
 
 export interface Client {

@@ -29,7 +29,6 @@ import {
   typingType,
   messageType,
   imageType,
-  imageBaseType,
 } from './Chatroom.interface';
 
 const Chatroom: FC = (): React.ReactElement => {
@@ -52,7 +51,7 @@ const Chatroom: FC = (): React.ReactElement => {
   //* Handle image
   const [url, setUrl]: imageType = useState<string>('');
 
-  const handleImage = async (camera: RNCamera, optionsSnapshot: object) => {
+  const handleAddImage = async (camera: RNCamera, optionsSnapshot: object) => {
     toastMessage('Please wait, image upload !');
     const data: TakePictureResponse = await camera.takePictureAsync(optionsSnapshot);
     const url: string = (await getDownloadURL(data)) as string;
@@ -119,7 +118,7 @@ const Chatroom: FC = (): React.ReactElement => {
 
   useEffect(() => {
     //* Set start messages to chat
-    // setMessages(chatroom.messages);
+    setMessages(chatroom?.messages ? Object.values(chatroom.messages) : []);
 
     let listener = {
       message: handleMessage,
@@ -187,16 +186,26 @@ const Chatroom: FC = (): React.ReactElement => {
 
   return (
     <View style={styles.chatroom}>
-      <Namebar messagesLength={messages.length} operatorId={operatorId} />
-      <Messages isTyping={isTyping} messages={messages} person={person} />
+      <Namebar 
+        messagesLength={messages.length} 
+        operatorId={operatorId} 
+      />
+      <Messages 
+        isTyping={isTyping} 
+        messages={messages} 
+        person={person} 
+      />
       <Inputbar
         message={message}
-        handleImage={handleImage}
+        handleAddImage={handleAddImage}
         handleKeyUp={handleKeyUp}
         handleSubmit={handleSubmit}
         onChangeMessage={onChangeMessage}
       />
-      <Preview image={url} handleDeleteImage={handleDeleteImage} />
+      <Preview 
+        image={url} 
+        handleDeleteImage={handleDeleteImage} 
+      />
     </View>
   );
 };

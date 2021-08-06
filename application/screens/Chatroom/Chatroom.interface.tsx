@@ -25,6 +25,4 @@ export type chatroomType = [string, Chatroom];
 export type fieldType = [string, React.Dispatch<React.SetStateAction<string>>];
 export type messageType = [Message[], Function];
 export type typingType = [boolean, Function];
-
-export type imageBaseType = { uri: string }
 export type imageType = [string, Function];

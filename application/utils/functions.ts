@@ -1,4 +1,5 @@
 import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
+import { TakePictureResponse } from 'react-native-camera';
 import database, {
   firebase,
   FirebaseDatabaseTypes,
@@ -6,7 +7,6 @@ import database, {
 
 import { Person, User } from '../App.interface';
 import { DIALOG_STATUS, DIALOG_ID } from './consts';
-import { TakePictureResponse } from 'react-native-camera';
 
 export interface CreateChatroom {
   name: string;
@@ -64,6 +64,7 @@ export const createChatroom = async (
 };
 
 export const complitedDialog = async (person: Person, score: number): Promise<void> => {
+  const complited = firebase.database.ServerValue.TIMESTAMP;
   try {
     await fetch(
       `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${person.key}.json`,
@@ -75,6 +76,7 @@ export const complitedDialog = async (person: Person, score: number): Promise<vo
         body: JSON.stringify({
           status: 'complited',
           score,
+          complited,
         }),
       },
     );

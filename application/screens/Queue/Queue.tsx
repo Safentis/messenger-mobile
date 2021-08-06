@@ -13,7 +13,7 @@ import { Chatroom } from '../../App.interface';
 const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
   //* Redux
-  const [positionInQueue, setPositionInQueue] = useState<number>(0) 
+  const [positionInQueue, setPositionInQueue] = useState<number>(1); 
   const { person, chatrooms } = useSelector(
     (state: { application: State }) => {
       return {
