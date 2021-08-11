@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     // content case
-    minWidth: 200,
+    minWidth: 250,
     padding: 15,
     borderRadius: 5,
     borderWidth: 0.5,

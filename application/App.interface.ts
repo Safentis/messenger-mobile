@@ -47,6 +47,16 @@ export interface Chatrooms {
   [key: string]: Chatroom;
 }
 
+export interface Users {
+  [key: string]: User
+}
+
 export interface GlobalContextInterface {
   pubnub: Pubnub;
+}
+
+export interface Database {
+  chatrooms: Chatrooms;
+  client: Client;
+  users: Users;
 }

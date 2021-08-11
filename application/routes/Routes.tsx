@@ -1,6 +1,6 @@
 import React, { useEffect, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Router, Scene } from 'react-native-router-flux';
+import { Actions, Router, Scene } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
 import { REACT_APP_ONSIGNALS_APP_ID } from '@env';
 
@@ -12,6 +12,7 @@ import Complite from '../screens/Complite/Complite';
 import useDatabase from '../hooks/useDatabase';
 import { requestDatabase } from '../redux/performers/application';
 
+import { Chatrooms, Database } from '../App.interface';
 import { State } from '../redux/reducers/application/application.interface';
 import { styles } from './Routes.styles';
 
@@ -21,7 +22,7 @@ const Routes: FC = (): React.ReactElement => {
   //* and set them to redux store.
   const dispatch = useDispatch();
 
-  useDatabase(undefined, database => {
+  useDatabase(undefined, (database: Database) => {
     dispatch(requestDatabase(database));
   });
 
@@ -43,13 +44,12 @@ const Routes: FC = (): React.ReactElement => {
     //* End init
 
     //* Handlers
-    OneSignal.setNotificationWillShowInForegroundHandler(
-      notificationReceivedEvent => {
-        let notification = notificationReceivedEvent.getNotification();
-        const data = notification.additionalData;
-        notificationReceivedEvent.complete(notification);
-      },
-    );
+    OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+      let notification = notificationReceivedEvent.getNotification();
+      const data = notification.additionalData;
+      notificationReceivedEvent.complete(notification);
+      Actions.chatroom();
+    });
     return () => {
       OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
     };
@@ -61,7 +61,7 @@ const Routes: FC = (): React.ReactElement => {
     return chatrooms ? chatrooms.hasOwnProperty(key) : false;
   };
 
-  const chatroomHasStatus = (key: string, chatrooms: any, status: string): boolean => {
+  const chatroomHasStatus = (key: string, chatrooms: Chatrooms, status: string): boolean => {
     switch (status) {
       case 'complited':
         return key.length === 0 || chatrooms[key].status === status;

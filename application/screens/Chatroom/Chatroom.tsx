@@ -9,10 +9,7 @@ import Preview from './Preview/Preview';
 import Namebar from './Namebar/Namebar';
 import Messages from './Messages/Messages';
 import Inputbar from './Inputbar/Inputbar';
-import {
-  requestListener,
-  requestMessage,
-} from '../../redux/performers/application';
+import { requestListener, requestMessage } from '../../redux/performers/application';
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Chatroom.styles';
@@ -20,6 +17,7 @@ import {
   Message as MessageInterface,
   Chatroom as ChatroomInterface,
   Person,
+  DateType,
 } from '../../App.interface';
 import {
   Signal,
@@ -40,7 +38,7 @@ const Chatroom: FC = (): React.ReactElement => {
   const toastMessage = (content: string): void => {
     ToastAndroid.showWithGravityAndOffset(
       content,
-      ToastAndroid.LONG,
+      ToastAndroid.SHORT,
       ToastAndroid.CENTER,
       25,
       50,
@@ -49,17 +47,17 @@ const Chatroom: FC = (): React.ReactElement => {
 
   //* ---------------------------------------------------------------------
   //* Handle image
-  const [url, setUrl]: imageType = useState<string>('');
+  const [data, setData] = useState<null | TakePictureResponse>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleAddImage = async (camera: RNCamera, optionsSnapshot: object) => {
-    toastMessage('Please wait, image upload !');
+    toastMessage('Please wait, image upload!');
     const data: TakePictureResponse = await camera.takePictureAsync(optionsSnapshot);
-    const url: string = (await getDownloadURL(data)) as string;
-    setUrl(url);
+    setData(data);
   };
 
   const handleDeleteImage = () => {
-    setUrl('');
+    setData(null);
   };
 
   //* ---------------------------------------------------------------------
@@ -84,9 +82,7 @@ const Chatroom: FC = (): React.ReactElement => {
   //* Here we obtain PubNub instance
   const { pubnub } = useGlobalContext();
   const chatroomChannel: string = `room-${person.key}`;
-  const [channels]: [string[], Function] = useState<string[]>([
-    chatroomChannel,
-  ]);
+  const [channels]: [string[], Function] = useState<string[]>([chatroomChannel]);
   const [isTyping, setIsTyping]: typingType = useState<boolean>(false);
   const [messages, setMessages]: messageType = useState<MessageInterface[]>(
     chatroom?.messages ? Object.values(chatroom.messages) : [],
@@ -103,6 +99,7 @@ const Chatroom: FC = (): React.ReactElement => {
       }
     }
   };
+
 
   const handleMessage = ({ message }: Envelope): void => {
     setMessages((msgs: MessageInterface[]) => [...msgs, message]);
@@ -152,12 +149,20 @@ const Chatroom: FC = (): React.ReactElement => {
 
   const handleSubmit = async () => {
     let isMessage: boolean = message.trim().length > 0;
-    let isUrl: boolean = url.length > 0;
-    let date: Date = new Date();
+    let date: DateType = new Date();
+    let url: string = '';
 
-    if (isMessage || isUrl) {
+    if (isMessage || data) {
       //* Resent input state
+
+      if (data) {
+        setIsLoading(true);
+        url = (await getDownloadURL(data)) as string;
+        setIsLoading(false);
+      }
+
       onChangeMessage('');
+      handleDeleteImage();
 
       //* Send signal to the channel `room-{person-key}`
       //* about ending of a type message
@@ -172,12 +177,10 @@ const Chatroom: FC = (): React.ReactElement => {
         message: {
           content: message,
           writtenBy: 'client',
-          images: isUrl ? [url] : [],
+          images: url.length > 0 ? [url] : [],
           timestamp: date,
         },
       });
-
-      setUrl('');
     }
   };
   //* ---------------------------------------------------------------------
@@ -186,14 +189,16 @@ const Chatroom: FC = (): React.ReactElement => {
 
   return (
     <View style={styles.chatroom}>
+      {/* prettier-ignore */}
       <Namebar 
         messagesLength={messages.length} 
         operatorId={operatorId} 
       />
+      {/* prettier-ignore */}
       <Messages 
         isTyping={isTyping} 
         messages={messages} 
-        person={person} 
+        person={person}
       />
       <Inputbar
         message={message}
@@ -202,8 +207,10 @@ const Chatroom: FC = (): React.ReactElement => {
         handleSubmit={handleSubmit}
         onChangeMessage={onChangeMessage}
       />
+      {/* prettier-ignore */}
       <Preview 
-        image={url} 
+        image={data && data.uri}
+        isLoading={isLoading} 
         handleDeleteImage={handleDeleteImage} 
       />
     </View>

@@ -6,7 +6,7 @@ import FSStorage from 'redux-persist-fs-storage';
 import { rootReducer } from '../reducers/rootReducer';
 import rootSaga from '../sagas/sagas';
 
-const persistConfig: any = {
+const persistConfig = {
     key: 'root',
     keyPrefix: '',
     storage: FSStorage(),

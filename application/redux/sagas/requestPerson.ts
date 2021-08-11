@@ -9,9 +9,14 @@ interface RequestPersonPayload {
     }
 };
 
+/**
+ * @param {object} payload
+ * @param {Person} payload.person
+ * @returns {Generator <StrictEffect, void, any>}
+ */
 export default function* requestPerson({ payload: { person } }: RequestPersonPayload): Generator<
     StrictEffect, 
-    any, 
+    void, 
     any
 > {
   try {

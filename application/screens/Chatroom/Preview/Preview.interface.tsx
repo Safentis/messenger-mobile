@@ -1,4 +1,5 @@
 export interface Props {
-    image: string;
+    image: null | string;
+    isLoading: boolean;
     handleDeleteImage: () => void;
 }

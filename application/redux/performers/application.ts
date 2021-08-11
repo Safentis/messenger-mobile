@@ -5,7 +5,7 @@ import {
     REQUEST_PERSON, 
 } from '../actions/application';
 
-import { Chatroom, Client, Message, Person } from '../../App.interface';
+import { Database, Message, Person } from '../../App.interface';
 
 export const requestPerson = (person: Person) => {
     return {
@@ -16,7 +16,7 @@ export const requestPerson = (person: Person) => {
     };
 };
 
-export const requestDatabase = (database: { chatrooms: Chatroom, client: Client }) => {
+export const requestDatabase = (database: Database) => {
     return {
         type: REQUEST_DATABASE,
         payload: {

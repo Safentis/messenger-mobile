@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { useSelector } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
+import { useSelector } from 'react-redux';
 
-import { State } from '../../redux/reducers/application/application.interface';
 import useQueue from '../../hooks/useQueue';
 
+import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Queue.styles';
 import { Chatroom } from '../../App.interface';
 

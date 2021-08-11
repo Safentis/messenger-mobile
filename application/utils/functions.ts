@@ -7,6 +7,7 @@ import database, {
 
 import { Person, User } from '../App.interface';
 import { DIALOG_STATUS, DIALOG_ID } from './consts';
+import { FetchMessages } from '../redux/sagas/requestMessage';
 
 export interface CreateChatroom {
   name: string;
@@ -99,6 +100,24 @@ interface CreateUser {
   uid: string;
   user: User;
 }
+
+export const fetchMessages = async ({ chatId, message }: FetchMessages): Promise<void> => {
+  try {
+    await fetch(
+      `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${chatId}/messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      }
+    );
+  } catch (error) {
+    console.error(error.code);
+    console.error(error.message);
+  }
+};
 
 export const createUser = async ({uid, user}: CreateUser): Promise<void> => {
   try {

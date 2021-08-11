@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import { FirebaseDatabaseTypes } from '@react-native-firebase/database';
 import database from '@react-native-firebase/database';
 
+import { Database } from '../App.interface';
+
 type Snapshot = FirebaseDatabaseTypes.DataSnapshot;
 type Referece = FirebaseDatabaseTypes.Reference;
 
 type Ref = string | undefined;
-type Callback = (data: any) => any;
+type Callback = (data: Database) => void;
 
 /**
  * 
@@ -15,7 +17,7 @@ type Callback = (data: any) => any;
  * @returns {null} null
  */
 //* useDatabase is hook for getting data from database firebase
-const useDatabase = (ref: Ref, callback: Callback): any => {
+const useDatabase = (ref: Ref, callback: Callback) => {
   useEffect(() => {
     try {
       let databaseRef: Referece;

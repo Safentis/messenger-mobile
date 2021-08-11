@@ -1,11 +1,8 @@
-import { Client } from '../../../App.interface';
+import { Database } from '../../../App.interface';
 
 export interface State {
   listener: object;
-  database: {
-    chatrooms: any;
-    client: Client;
-  };
+  database: Database;
   person: {
     name: string;
     key: string;
@@ -16,5 +13,5 @@ export interface State {
 
 export interface Action {
   type: string;
-  payload: any;
+  payload: State;
 }

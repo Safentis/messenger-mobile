@@ -13,6 +13,7 @@ const initialState: State = {
       themes: [],
       subthemes: [],
     },
+    users: {}
   },
   person: {
     name: '',
