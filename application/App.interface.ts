@@ -1,7 +1,11 @@
+import Pubnub from "pubnub";
+
+export type DateType = string | number | Date;
+
 export interface Chatroom {
-  begun: string | number | Date
+  begun: DateType
   client: string
-  created: string | number | Date
+  created: DateType
   messages: Message
   operatorId: string
   operator: string
@@ -10,7 +14,7 @@ export interface Chatroom {
   status: string
   theme: string
   subtheme: string
-  complited: string | number | Date
+  complited: DateType
 }
 
 export interface Client {
@@ -20,14 +24,9 @@ export interface Client {
 
 export interface Message {
   content: string
-  timestamp: string | number | Date
+  timestamp: DateType
   writtenBy: string
   images: string[]
-}
-
-export interface Database {
-  chatrooms: Chatroom | null
-  client: Client
 }
 
 export interface Person {
@@ -42,4 +41,12 @@ export interface User {
   email?: string
   photo?: string
   status?: string | boolean
+}
+
+export interface Chatrooms {
+  [key: string]: Chatroom;
+}
+
+export interface GlobalContextInterface {
+  pubnub: Pubnub;
 }

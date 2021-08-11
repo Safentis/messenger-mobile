@@ -6,28 +6,25 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { PubNubProvider } from 'pubnub-react';
 import PubNub from 'pubnub';
 
+import { REACT_APP_SUBSCRIBE_KEY, REACT_APP_PUBLISH_KEY } from '@env';
+import { GlobalContextInterface } from './App.interface';
 import { persistor, store } from './redux/store/store';
 import Routes from './routes/Routes';
-import Pubnub from 'pubnub';
+
+LogBox.ignoreLogs(['Setting a timer']);
 
 const pubnub = new PubNub({
-  subscribeKey: 'sub-c-4e5c7380-df58-11eb-b709-22f598fbfd18',
-  publishKey: 'pub-c-d4239ce3-2f26-42a7-9b3c-730ce6e7510f',
+  subscribeKey: REACT_APP_SUBSCRIBE_KEY,
+  publishKey: REACT_APP_PUBLISH_KEY,
   ssl: true,
   presenceTimeout: 130,
 });
-
-interface GlobalContextInterface {
-  pubnub: Pubnub;
-}
 
 export const GlobalContext = createContext<GlobalContextInterface>({
   pubnub: pubnub,
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
-
-LogBox.ignoreLogs(['Setting a timer']);
 
 const App = () => {
   return (

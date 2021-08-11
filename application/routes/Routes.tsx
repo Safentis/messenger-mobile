@@ -2,6 +2,7 @@ import React, { useEffect, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Router, Scene } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
+import { REACT_APP_ONSIGNALS_APP_ID } from '@env';
 
 import Camera from '../screens/Camera/Camera';
 import Queue from '../screens/Queue/Queue';
@@ -13,7 +14,6 @@ import { requestDatabase } from '../redux/performers/application';
 
 import { State } from '../redux/reducers/application/application.interface';
 import { styles } from './Routes.styles';
-import { Modal } from 'react-native';
 
 const Routes: FC = (): React.ReactElement => {
   //* ------------------------------------------------
@@ -39,7 +39,7 @@ const Routes: FC = (): React.ReactElement => {
   useEffect(() => {
     //* Start init
     OneSignal.setLogLevel(6, 0);
-    OneSignal.setAppId('a2911f18-bdfe-49d5-91c4-be043931de21');
+    OneSignal.setAppId(REACT_APP_ONSIGNALS_APP_ID);
     //* End init
 
     //* Handlers
