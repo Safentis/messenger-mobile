@@ -40,10 +40,7 @@ const Messages: FC<Props> = ({ messages = [], person, isTyping }) => {
           {messages.length > 0 ? (
             messages
               .sort(
-                (
-                  messageA: MessageInterface,
-                  messageB: MessageInterface,
-                ): number =>
+                (messageA: MessageInterface, messageB: MessageInterface): number =>
                   +new Date(messageA.timestamp) - +new Date(messageB.timestamp),
               )
               .map((message: MessageInterface, index: number) => (
@@ -51,14 +48,8 @@ const Messages: FC<Props> = ({ messages = [], person, isTyping }) => {
               ))
           ) : (
             <View style={styles.sign}>
-              <Text style={styles.signText}>
-                No messages
-              </Text>
-              <FontAwesomeIcon 
-                style={[styles.signIcon]} 
-                size={25}
-                icon={faEnvelope}
-              />
+              <Text style={styles.signText}>No messages</Text>
+              <FontAwesomeIcon style={[styles.signIcon]} size={25} icon={faEnvelope} />
             </View>
           )}
           <Typing isTyping={isTyping} />

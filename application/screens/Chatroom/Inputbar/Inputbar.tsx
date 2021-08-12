@@ -26,10 +26,7 @@ const Inputbar: FC<Props> = ({
         placeholderTextColor={MAIN_DARK_GREY_COLOR}
       />
       <View style={styles.inputbarButtons}>
-        <TouchableOpacity
-          style={[styles.inputbarButton]}
-          onPress={handleSubmit}
-        >
+        <TouchableOpacity style={[styles.inputbarButton]} onPress={handleSubmit}>
           <FontAwesomeIcon
             style={[styles.inputbarIcon, styles.iconSend]}
             icon={faPaperPlane}

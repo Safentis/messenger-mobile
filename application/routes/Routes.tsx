@@ -61,7 +61,11 @@ const Routes: FC = (): React.ReactElement => {
     return chatrooms ? chatrooms.hasOwnProperty(key) : false;
   };
 
-  const chatroomHasStatus = (key: string, chatrooms: Chatrooms, status: string): boolean => {
+  const chatroomHasStatus = (
+    key: string,
+    chatrooms: Chatrooms,
+    status: string,
+  ): boolean => {
     switch (status) {
       case 'complited':
         return key.length === 0 || chatrooms[key].status === status;

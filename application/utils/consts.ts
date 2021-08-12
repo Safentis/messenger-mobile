@@ -1,4 +1,3 @@
-
 //* --------------------------------------------------
 //* COLORS CONSTS
 export const MAIN_BLACK_COLOR: string = '#111016';

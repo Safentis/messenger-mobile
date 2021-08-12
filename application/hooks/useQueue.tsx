@@ -37,10 +37,7 @@ const useQueue = ({ chatrooms, person }: Props, callback: callbackfunc) => {
     if (chatrooms) {
       let entries: [string, Chatroom][] = Object.entries(chatrooms);
 
-      entries
-        .filter(filterFunc)
-        .sort(sortFunc)
-        .find(findFunc);
+      entries.filter(filterFunc).sort(sortFunc).find(findFunc);
     }
   }, [chatrooms]);
 

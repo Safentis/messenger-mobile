@@ -25,16 +25,14 @@ const Namebar: FC<Props> = ({ messagesLength, operatorId }) => {
     <View style={styles.namebar}>
       <View style={styles.namebarContent}>
         <Text style={styles.namebarText}>Dialog with:</Text>
-        <Text style={[styles.namebarName]}>
-          {operator?.name}
-        </Text>
+        <Text style={[styles.namebarName]}>{operator?.name}</Text>
       </View>
       {messagesLength > 0 ? (
         <TouchableOpacity
           style={[styles.namebarButton, styles.button]}
           onPress={() => Actions.complite()}
         >
-            <Text style={styles.buttonText}>Complite</Text>
+          <Text style={styles.buttonText}>Complite</Text>
           <FontAwesomeIcon style={styles.buttonIcon} size={20} icon={faStar} />
         </TouchableOpacity>
       ) : null}

@@ -26,7 +26,6 @@ import {
   fieldType,
   typingType,
   messageType,
-  imageType,
 } from './Chatroom.interface';
 
 const Chatroom: FC = (): React.ReactElement => {
@@ -99,7 +98,6 @@ const Chatroom: FC = (): React.ReactElement => {
       }
     }
   };
-
 
   const handleMessage = ({ message }: Envelope): void => {
     setMessages((msgs: MessageInterface[]) => [...msgs, message]);

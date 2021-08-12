@@ -3,17 +3,16 @@ import { FC, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Actions } from 'react-native-router-flux';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  Text, 
-  View, 
-  Alert, 
-  Button, 
-  TextInput, 
-  ScrollView, 
+import {
+  Text,
+  View,
+  Alert,
+  Button,
+  TextInput,
+  ScrollView,
   SafeAreaView,
-  TouchableOpacity 
+  TouchableOpacity,
 } from 'react-native';
-
 
 import { State } from '../../redux/reducers/application/application.interface';
 import { styles } from './Question.styles';
@@ -33,15 +32,15 @@ const Question: FC = (): React.ReactElement => {
   const client = useSelector((state: { application: State }) => {
     return state.application?.database?.client;
   });
-  
+
   // Object client check
   const isObject: boolean = typeof client === 'object';
-  const isThemes: boolean =  isObject && 'themes' in client;
+  const isThemes: boolean = isObject && 'themes' in client;
   const isSubthemes: boolean = isObject && 'subthemes' in client;
-  
+
   let themesStartValue = isThemes ? client.themes[0] : '';
   let subthemesStartValue = isSubthemes ? client.subthemes[0] : '';
-  
+
   //* ----------------------------------------------------------
   //* Choise
   const [name, onChangeName]: field = useState('');
@@ -52,11 +51,11 @@ const Question: FC = (): React.ReactElement => {
   // Set to database
   const ALERT_TITLE: string = 'Issue';
   const ALERT_FIELDS_EMPTY: string = 'Not all fields are filled';
-  
+
   const handleStatus = async ({ status, key }: HandleCallback): Promise<void> => {
     if (status) {
       Actions.queue();
-      await createUser({uid: key, user: { name }});
+      await createUser({ uid: key, user: { name } });
       await dispatch(
         requestPerson({
           subtheme: selectedSubtheme,
@@ -93,9 +92,7 @@ const Question: FC = (): React.ReactElement => {
     <SafeAreaView>
       <ScrollView>
         <View style={styles.question}>
-          <Text style={styles.questionTitle}>
-            question
-          </Text>
+          <Text style={styles.questionTitle}>question</Text>
 
           <View style={styles.questionBlock}>
             <Text style={styles.label}>Enter name</Text>
@@ -111,9 +108,8 @@ const Question: FC = (): React.ReactElement => {
             <View style={[styles.input, styles.questionSelect]}>
               <Picker
                 selectedValue={selectedTheme}
-                onValueChange={(itemValue, itemIndex) => 
-                  setSelectedTheme(itemValue)
-                }>
+                onValueChange={(itemValue, itemIndex) => setSelectedTheme(itemValue)}
+              >
                 {isThemes
                   ? client?.themes.map((theme: string, index: number) => (
                       <Picker.Item key={index} label={theme} value={theme} />
@@ -128,9 +124,8 @@ const Question: FC = (): React.ReactElement => {
             <View style={[styles.input, styles.questionSelect]}>
               <Picker
                 selectedValue={selectedSubtheme}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSelectedSubtheme(itemValue)
-                }>
+                onValueChange={(itemValue, itemIndex) => setSelectedSubtheme(itemValue)}
+              >
                 {isSubthemes
                   ? client?.subthemes.map((theme: string, index: number) => (
                       <Picker.Item key={index} label={theme} value={theme} />
@@ -141,16 +136,12 @@ const Question: FC = (): React.ReactElement => {
           </View>
 
           <TouchableOpacity style={styles.questionButton} onPress={handleQuestion}>
-            <Text style={[styles.label, styles.questionButtonText]}>
-              Enter
-            </Text>
+            <Text style={[styles.label, styles.questionButtonText]}>Enter</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-
 
 export default Question;

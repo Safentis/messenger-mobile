@@ -13,15 +13,13 @@ import { Chatroom } from '../../App.interface';
 const Queue: FC = (): React.ReactElement => {
   //* ----------------------------------------------
   //* Redux
-  const [positionInQueue, setPositionInQueue] = useState<number>(1); 
-  const { person, chatrooms } = useSelector(
-    (state: { application: State }) => {
-      return {
-        chatrooms: state.application.database.chatrooms,
-        person: state.application.person,
-      };
-    },
-  );
+  const [positionInQueue, setPositionInQueue] = useState<number>(1);
+  const { person, chatrooms } = useSelector((state: { application: State }) => {
+    return {
+      chatrooms: state.application.database.chatrooms,
+      person: state.application.person,
+    };
+  });
 
   //* ----------------------------------------------
   //* Function for handling
@@ -43,12 +41,9 @@ const Queue: FC = (): React.ReactElement => {
   const NOTIFICATION_MESSAGE = 'You will receive a notification when the dialogue starts';
   const handleReminde = async () => {
     await OneSignal.sendTag('dialog', person.key);
-    await OneSignal.getTags((tags) => {
+    await OneSignal.getTags(tags => {
       if ('dialog' in tags) {
-        Alert.alert(
-          NOTIFICATION_TITLE, 
-          NOTIFICATION_MESSAGE
-        );
+        Alert.alert(NOTIFICATION_TITLE, NOTIFICATION_MESSAGE);
       }
     });
   };
@@ -58,14 +53,12 @@ const Queue: FC = (): React.ReactElement => {
       <View style={styles.queueText}>
         <Text style={styles.queueTextInfo}>
           You are in the queue on the{' '}
-          <Text style={styles.queuePosition}>{positionInQueue}</Text> rd place.
-          You will be answered soon
+          <Text style={styles.queuePosition}>{positionInQueue}</Text> rd place. You will
+          be answered soon
         </Text>
       </View>
       <TouchableOpacity style={styles.queueButton} onPress={handleReminde}>
-        <Text style={styles.queueButtonText}>
-          Remind when it's turn
-        </Text>
+        <Text style={styles.queueButtonText}>Remind when it's turn</Text>
       </TouchableOpacity>
     </View>
   );

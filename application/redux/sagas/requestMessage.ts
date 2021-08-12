@@ -9,24 +9,22 @@ export interface FetchMessages {
 }
 
 interface RequestMessages {
-    payload: FetchMessages
+  payload: FetchMessages;
 }
 
 /**
  * @param {object} payload
- * @param {string} payload.chatId 
+ * @param {string} payload.chatId
  * @param {Message} payload.body
  * @returns {Generator <StrictEffect, void, any>}
  */
-export default function* requestMessage({payload: { chatId, message } }: RequestMessages): Generator<
-    StrictEffect, 
-    void, 
-    any
-> {
-    try {
-        yield call(fetchMessages, { chatId, message });
-    } catch (error) {
-        console.error('Code ', error.code);
-        console.error('Message ', error.message);
-    }
+export default function* requestMessage({
+  payload: { chatId, message },
+}: RequestMessages): Generator<StrictEffect, void, any> {
+  try {
+    yield call(fetchMessages, { chatId, message });
+  } catch (error) {
+    console.error('Code ', error.code);
+    console.error('Message ', error.message);
+  }
 }

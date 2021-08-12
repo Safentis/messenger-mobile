@@ -11,9 +11,9 @@ type Ref = string | undefined;
 type Callback = (data: Database) => void;
 
 /**
- * 
- * @param {string | undefined} ref 
- * @param {Function} callback 
+ *
+ * @param {string | undefined} ref
+ * @param {Function} callback
  * @returns {null} null
  */
 //* useDatabase is hook for getting data from database firebase
@@ -22,9 +22,9 @@ const useDatabase = (ref: Ref, callback: Callback) => {
     try {
       let databaseRef: Referece;
 
-      (typeof ref === undefined)
-        ? databaseRef = database().ref()
-        : databaseRef = database().ref(ref);
+      typeof ref === undefined
+        ? (databaseRef = database().ref())
+        : (databaseRef = database().ref(ref));
 
       databaseRef.on('value', (snapshot: Snapshot) => {
         callback(snapshot.val());
