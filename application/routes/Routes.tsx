@@ -1,25 +1,28 @@
 import React, { useEffect, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Router, Scene } from 'react-native-router-flux';
+import { Actions, Router, Scene } from 'react-native-router-flux';
 import OneSignal from 'react-native-onesignal';
+import { REACT_APP_ONSIGNALS_APP_ID } from '@env';
 
-import Question from '../screens/Question/Question';
+import Camera from '../screens/Camera/Camera';
 import Queue from '../screens/Queue/Queue';
+import Question from '../screens/Question/Question';
 import Chatroom from '../screens/Chatroom/Chatroom';
 import Complite from '../screens/Complite/Complite';
 import useDatabase from '../hooks/useDatabase';
 import { requestDatabase } from '../redux/performers/application';
 
+import { Chatrooms, Database } from '../App.interface';
 import { State } from '../redux/reducers/application/application.interface';
 import { styles } from './Routes.styles';
 
-const Routes: FC = () => {
+const Routes: FC = (): React.ReactElement => {
   //* ------------------------------------------------
   //* In this case we are getting an all data from database
   //* and set them to redux store.
   const dispatch = useDispatch();
 
-  useDatabase(undefined, database => {
+  useDatabase(undefined, (database: Database) => {
     dispatch(requestDatabase(database));
   });
 
@@ -37,17 +40,16 @@ const Routes: FC = () => {
   useEffect(() => {
     //* Start init
     OneSignal.setLogLevel(6, 0);
-    OneSignal.setAppId('a2911f18-bdfe-49d5-91c4-be043931de21');
+    OneSignal.setAppId(REACT_APP_ONSIGNALS_APP_ID);
     //* End init
 
     //* Handlers
-    OneSignal.setNotificationWillShowInForegroundHandler(
-      notificationReceivedEvent => {
-        let notification = notificationReceivedEvent.getNotification();
-        const data = notification.additionalData;
-        notificationReceivedEvent.complete(notification);
-      },
-    );
+    OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+      let notification = notificationReceivedEvent.getNotification();
+      const data = notification.additionalData;
+      notificationReceivedEvent.complete(notification);
+      Actions.chatroom();
+    });
     return () => {
       OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
     };
@@ -59,7 +61,11 @@ const Routes: FC = () => {
     return chatrooms ? chatrooms.hasOwnProperty(key) : false;
   };
 
-  const chatroomHasStatus = (key: string, chatrooms: any, status: string): boolean => {
+  const chatroomHasStatus = (
+    key: string,
+    chatrooms: Chatrooms,
+    status: string,
+  ): boolean => {
     switch (status) {
       case 'complited':
         return key.length === 0 || chatrooms[key].status === status;
@@ -103,6 +109,7 @@ const Routes: FC = () => {
           }
         />
         <Scene key="complite" component={Complite} hideNavBar={true} />
+        <Scene key="camera" component={Camera} hideNavBar={true} />
       </Scene>
     </Router>
   );

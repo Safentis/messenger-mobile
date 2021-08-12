@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { MAIN_LIGHT_BLUE_COLOR, MAIN_LIGHT_GREY_COLOR } from '../utils/consts';
+
+import { MAIN_LIGHT_GREY_COLOR } from '../utils/consts';
 
 export const styles = StyleSheet.create({
   loaderWrapper: {
@@ -9,6 +10,5 @@ export const styles = StyleSheet.create({
   loader: {},
   container: {
     backgroundColor: MAIN_LIGHT_GREY_COLOR,
-    // padding: 20,
   },
 });

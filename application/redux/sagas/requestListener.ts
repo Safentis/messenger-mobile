@@ -8,6 +8,11 @@ interface RequestClientPayload {
   };
 }
 
+/**
+ * @param {object} payload
+ * @param {object} payload.listener
+ * @returns {Generator <StrictEffect, void, any>}
+ */
 export default function* requestListener({
   payload: { listener },
 }: RequestClientPayload): Generator<StrictEffect, void, any> {

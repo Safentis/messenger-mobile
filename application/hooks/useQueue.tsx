@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Chatroom } from '../App.interface';
+import { Chatroom, Chatrooms, Person } from '../App.interface';
 
 type callbackfunc = (positionInQueue: number) => number | void;
 type typefunc = [string, Chatroom];
 
 interface Props {
-  chatrooms: any;
-  person: any;
+  chatrooms: Chatrooms;
+  person: Person;
 }
 
 const useQueue = ({ chatrooms, person }: Props, callback: callbackfunc) => {
@@ -37,10 +37,7 @@ const useQueue = ({ chatrooms, person }: Props, callback: callbackfunc) => {
     if (chatrooms) {
       let entries: [string, Chatroom][] = Object.entries(chatrooms);
 
-      entries
-        .filter(filterFunc)
-        .sort(sortFunc)
-        .find(findFunc);
+      entries.filter(filterFunc).sort(sortFunc).find(findFunc);
     }
   }, [chatrooms]);
 

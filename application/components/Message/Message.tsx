@@ -13,11 +13,9 @@ const Message: FC<Props> = ({
   images = [],
 }): React.ReactElement => {
   //* -------------------------------------------------------------------------
-  //* Classes for the message, they depend from writtenBy field 
+  //* Classes for the message, they depend from writtenBy field
   let isOperator: boolean = writtenBy === 'operator';
-  let contentClass: object = isOperator
-    ? styles.contentOperator
-    : styles.contentClient;
+  let contentClass: object = isOperator ? styles.contentOperator : styles.contentClient;
   let textClass: object = isOperator ? styles.textOperator : styles.textClient;
   let informationClass: object = isOperator
     ? styles.informationOperator
@@ -27,14 +25,10 @@ const Message: FC<Props> = ({
   //* Content
   const IMAGES: messageContent = images.length > 0 && (
     <View style={styles.images}>
-      {images.map(
-        (uri: string, index: number): React.ReactElement => (
-          <Image 
-            style={styles.image} 
-            source={{ uri }} 
-            key={index}
-          />
-        ),
+      {images.map((uri: string, index: number): React.ReactElement | null =>
+        uri.length > 0 ? (
+          <Image style={styles.image} source={{ uri }} key={index} />
+        ) : null,
       )}
     </View>
   );
@@ -50,10 +44,10 @@ const Message: FC<Props> = ({
   return (
     <View style={[styles.message]}>
       <View style={styles.messageInner}>
-          {IMAGES}
-          {CONTENT}
+        {IMAGES}
+        {CONTENT}
         <View style={[styles.information, informationClass]}>
-          <Text style={[styles.writter]}>{isOperator ? writtenBy : "you"}</Text>
+          <Text style={[styles.writter]}>{isOperator ? writtenBy : 'you'}</Text>
           <Text style={[styles.time]}>{time}</Text>
         </View>
       </View>

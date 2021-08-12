@@ -35,10 +35,6 @@ export const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
   },
-  iconSend: {
-
-  },
-  iconClip: {
-
-  },
+  iconSend: {},
+  iconClip: {},
 });

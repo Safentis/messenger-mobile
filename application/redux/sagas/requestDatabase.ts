@@ -1,17 +1,19 @@
 import { put, StrictEffect } from 'redux-saga/effects';
-import { Chatroom, Client } from '../../App.interface';
+import { Database } from '../../App.interface';
 
 import { REQUEST_DATABASE_SET } from '../actions/application';
 
 interface RequestClientPayload {
   payload: {
-    database: {
-      chatrooms: Chatroom;
-      client: Client;
-    };
+    database: Database;
   };
 }
 
+/**
+ * @param {object} payload
+ * @param {Database} payload.database
+ * @returns {Generator <StrictEffect, void, any>}
+ */
 export default function* requestDatabase({
   payload: { database },
 }: RequestClientPayload): Generator<StrictEffect, void, any> {

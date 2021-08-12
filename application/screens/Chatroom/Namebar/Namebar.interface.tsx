@@ -1,4 +1,4 @@
 export interface Props {
-    messagesLength: number
-    operatorId: string
+  messagesLength: number;
+  operatorId: string;
 }

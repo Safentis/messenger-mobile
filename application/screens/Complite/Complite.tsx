@@ -6,17 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck, faStar } from '@fortawesome/free-solid-svg-icons';
 
 import { requestPerson } from '../../redux/performers/application';
-import { useGlobalContext } from '../../App'
-
-
+import { useGlobalContext } from '../../App';
+import { complitedDialog } from '../../utils/functions';
 import { State } from '../../redux/reducers/application/application.interface';
 import { Person } from '../../App.interface';
 import { styles } from './Complite.styles';
-import { 
-  MAIN_GOLD_COLOR, 
-  MAIN_GREY_COLOR 
-} from '../../utils/consts';
-
+import { MAIN_GOLD_COLOR, MAIN_GREY_COLOR } from '../../utils/consts';
 
 const Complite: FC = () => {
   const dispatch = useDispatch();
@@ -25,37 +20,26 @@ const Complite: FC = () => {
     return {
       person: state.application.person as Person,
       listener: state.application.listener,
-    }; 
+    };
   });
 
   const stars: number[] = [...Array(5).keys()];
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<number>(0);
 
   const handleScore = async (): Promise<void> => {
     //* is score is equal of the zerro
     if (score === 0) return;
 
     try {
-      await fetch(
-        `https://messenger-b15ea-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${person.key}.json`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: 'complited',
-            score,
-          }),
-        },
+      await complitedDialog(person, score); //* from utils/functions
+      await dispatch(
+        requestPerson({
+          name: '',
+          key: '',
+          theme: '',
+          subtheme: '',
+        }),
       );
-
-      await dispatch(requestPerson({
-        name: '',
-        key: '',
-        theme: '',
-        subtheme: '',
-      }));
 
       //* in this case, we are deleling all subscribes
       //* and listeners
@@ -74,7 +58,7 @@ const Complite: FC = () => {
     <View style={styles.complite}>
       <View style={styles.header}>
         <Text style={styles.text}>
-          Dialogue completed. {'\n'} 
+          Dialogue completed. {'\n'}
           Rate communication with a specialist.
         </Text>
       </View>
@@ -84,9 +68,7 @@ const Complite: FC = () => {
             <TouchableOpacity key={index} onPress={() => setScore(star + 1)}>
               <FontAwesomeIcon
                 style={{
-                  color: score <= star 
-                    ? MAIN_GREY_COLOR 
-                    : MAIN_GOLD_COLOR,
+                  color: score <= star ? MAIN_GREY_COLOR : MAIN_GOLD_COLOR,
                 }}
                 icon={faStar}
                 size={50}
@@ -97,14 +79,8 @@ const Complite: FC = () => {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={handleScore}>
-          <Text style={styles.buttonText}>
-            Appreciate
-          </Text>
-          <FontAwesomeIcon 
-            style={styles.buttonIcon} 
-            size={25}
-            icon={faCheck} 
-          />
+          <Text style={styles.buttonText}>Appreciate</Text>
+          <FontAwesomeIcon style={styles.buttonIcon} size={25} icon={faCheck} />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -40,10 +40,7 @@ const Messages: FC<Props> = ({ messages = [], person, isTyping }) => {
           {messages.length > 0 ? (
             messages
               .sort(
-                (
-                  messageA: MessageInterface,
-                  messageB: MessageInterface,
-                ): number =>
+                (messageA: MessageInterface, messageB: MessageInterface): number =>
                   +new Date(messageA.timestamp) - +new Date(messageB.timestamp),
               )
               .map((message: MessageInterface, index: number) => (
@@ -51,14 +48,8 @@ const Messages: FC<Props> = ({ messages = [], person, isTyping }) => {
               ))
           ) : (
             <View style={styles.sign}>
-              <Text style={styles.signText}>
-                No messages
-              </Text>
-              <FontAwesomeIcon 
-                style={[styles.signIcon]} 
-                size={25}
-                icon={faEnvelope}
-              />
+              <Text style={styles.signText}>No messages</Text>
+              <FontAwesomeIcon style={[styles.signIcon]} size={25} icon={faEnvelope} />
             </View>
           )}
           <Typing isTyping={isTyping} />

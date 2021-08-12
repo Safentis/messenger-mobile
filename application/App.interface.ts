@@ -1,44 +1,62 @@
+import Pubnub from 'pubnub';
+
+export type DateType = string | number | Date;
+
 export interface Chatroom {
-  begun: string | number | Date
-  client: string
-  created: string | number | Date
-  messages: Message
-  operatorId: string
-  operator: string
-  saved: string
-  score: string | number | null 
-  status: string
-  theme: string
-  subtheme: string
+  begun: DateType;
+  client: string;
+  created: DateType;
+  messages: Message;
+  operatorId: string;
+  operator: string;
+  saved: string;
+  score: string | number | null;
+  status: string;
+  theme: string;
+  subtheme: string;
+  complited: DateType;
 }
 
 export interface Client {
-  themes: string[]
-  subthemes: string[]
+  themes: string[];
+  subthemes: string[];
 }
 
 export interface Message {
-  content: string
-  timestamp: string | number | Date
-  writtenBy: string
-  images: string[]
-}
-
-export interface Database {
-  chatrooms: Chatroom | null
-  client: Client
+  content: string;
+  timestamp: DateType;
+  writtenBy: string;
+  images: string[];
 }
 
 export interface Person {
-  name: string
-  key: string
-  theme: string
-  subtheme: string
-};
+  name: string;
+  key: string;
+  theme: string;
+  subtheme: string;
+}
 
 export interface User {
-  name: string
-  email?: string
-  photo?: string
-  status?: string | boolean
+  name: string;
+  email?: string;
+  photo?: string;
+  status?: string | boolean;
+}
+
+export interface Chatrooms {
+  [key: string]: Chatroom;
+}
+
+export interface Users {
+  [key: string]: User;
+}
+
+export interface GlobalContextInterface {
+  pubnub: Pubnub;
+}
+
+export interface Database {
+  chatrooms: Chatrooms;
+  client: Client;
+  users: Users;
 }

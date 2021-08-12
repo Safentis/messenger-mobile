@@ -5,18 +5,18 @@ import requestDatabase from './requestDatabase';
 import requestMessage from './requestMessage';
 import requestListener from './requestListener';
 
-import { 
+import {
   REQUEST_DATABASE,
   REQUEST_LISTENER,
   REQUEST_MESSAGE,
-  REQUEST_PERSON, 
+  REQUEST_PERSON,
 } from '../actions/application';
 
 export default function* rootSaga() {
   yield all([
-    takeEvery(REQUEST_PERSON  as any, requestPerson),
-    takeEvery(REQUEST_DATABASE  as any, requestDatabase),
-    takeEvery(REQUEST_MESSAGE  as any, requestMessage),
-    takeEvery(REQUEST_LISTENER  as any, requestListener),
+    takeEvery(REQUEST_PERSON as any, requestPerson),
+    takeEvery(REQUEST_DATABASE as any, requestDatabase),
+    takeEvery(REQUEST_MESSAGE as any, requestMessage),
+    takeEvery(REQUEST_LISTENER as any, requestListener),
   ]);
 }
