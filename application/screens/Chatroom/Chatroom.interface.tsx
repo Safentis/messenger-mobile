@@ -1,4 +1,3 @@
-import { TakePictureResponse } from 'react-native-camera';
 import { Chatroom, Message, Person } from '../../App.interface';
 
 export interface Signal {

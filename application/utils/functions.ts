@@ -167,13 +167,10 @@ export const getDownloadURL = (data: TakePictureResponse) => {
         switch (error.code) {
           case 'storage/unauthorized':
             throw new Error(`User doesn't have permission to access the object`);
-            break;
           case 'storage/canceled':
             throw new Error(`User canceled the upload`);
-            break;
           case 'storage/unknown':
             throw new Error(`Unknown error occurred, inspect error.serverResponse`);
-            break;
         }
       },
       () => {

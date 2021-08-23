@@ -7,7 +7,6 @@ import {
   Text,
   View,
   Alert,
-  Button,
   TextInput,
   ScrollView,
   SafeAreaView,
