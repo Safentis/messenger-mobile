@@ -7,7 +7,6 @@ import {
 
 export const styles = StyleSheet.create({
   inputbar: {
-    // inputbar
     backgroundColor: MAIN_LIGHT_GREY_COLOR,
     justifyContent: 'space-between',
     flex: 1,
@@ -27,14 +26,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  inputbarButton: {
-    // margin: 5,
-  },
   inputbarIcon: {
     color: MAIN_BLUE_COLOR,
     marginLeft: 15,
     marginRight: 15,
   },
-  iconSend: {},
-  iconClip: {},
 });

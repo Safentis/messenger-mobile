@@ -4,7 +4,6 @@ import { MAIN_BLUE_COLOR, MAIN_DARK_GREY_COLOR } from '../../../utils/consts';
 
 export const styles = StyleSheet.create({
   namebar: {
-    // Namebar
     alignItems: 'center',
     flexDirection: 'row',
     padding: 10,

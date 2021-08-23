@@ -26,22 +26,11 @@ const Inputbar: FC<Props> = ({
         placeholderTextColor={MAIN_DARK_GREY_COLOR}
       />
       <View style={styles.inputbarButtons}>
-        <TouchableOpacity style={[styles.inputbarButton]} onPress={handleSubmit}>
-          <FontAwesomeIcon
-            style={[styles.inputbarIcon, styles.iconSend]}
-            icon={faPaperPlane}
-            size={25}
-          />
+        <TouchableOpacity onPress={handleSubmit}>
+          <FontAwesomeIcon style={[styles.inputbarIcon]} icon={faPaperPlane} size={25} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.inputbarButton]}
-          onPress={() => Actions.camera({ handleAddImage })}
-        >
-          <FontAwesomeIcon
-            style={[styles.inputbarIcon, styles.iconClip]}
-            icon={faPaperclip}
-            size={25}
-          />
+        <TouchableOpacity onPress={() => Actions.camera({ handleAddImage })}>
+          <FontAwesomeIcon style={[styles.inputbarIcon]} icon={faPaperclip} size={25} />
         </TouchableOpacity>
       </View>
     </View>
